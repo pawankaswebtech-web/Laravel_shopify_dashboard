@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    if ($request->has('shop')) {
+        return redirect()->route('home', $request->all());
+    }
+    return view('landing');
+})->name('landing');
+
+Route::get('/app', function () {
     return view('welcome');
 })->middleware(['verify.shopify'])->name('home');
