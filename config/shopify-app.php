@@ -193,7 +193,7 @@ return [
     |
     */
 
-    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products,read_themes'),
+    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products,read_themes,read_orders,write_orders,read_merchant_managed_fulfillment_orders,write_merchant_managed_fulfillment_orders'),
 
     /*
     |--------------------------------------------------------------------------
@@ -400,7 +400,26 @@ return [
                 'address' => env('SHOPIFY_WEBHOOK_3_ADDRESS', 'https://example.com/webhook/orders-create'),
                 'class' => \App\Shopify\Actions\ExampleAppJob::class
             ],
-        */],
+        */
+
+        [
+            'topic' => 'orders/create',
+            'address' => env('APP_URL') . '/webhook/orders-create',
+        ],
+        [
+            'topic' => 'orders/updated',
+            'address' => env('APP_URL') . '/webhook/orders-updated',
+        ],
+        [
+            'topic' => 'app/uninstalled',
+            'address' => env('APP_URL') . '/webhook/app-uninstalled',
+        ],
+
+
+
+
+    ]
+    ,
 
     /*
     |--------------------------------------------------------------------------
@@ -419,7 +438,8 @@ return [
                 'display_scope' => env('SHOPIFY_SCRIPTTAG_1_DISPLAY_SCOPE', 'online_store')
             ],
             ...
-        */],
+        */
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -443,7 +463,8 @@ return [
                 'job' => env('AFTER_AUTHENTICATE_JOB'), // example: \App\Jobs\AfterAuthorizeJob::class
                 'inline' => env('AFTER_AUTHENTICATE_JOB_INLINE', false) // False = dispatch job for later, true = dispatch immediately
             ],
-        */],
+        */
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -504,25 +525,25 @@ return [
 
     'models' => [
         /*
-        * The fully qualified class name of the Charge model.
-        */
+         * The fully qualified class name of the Charge model.
+         */
         'charge' => Osiset\ShopifyApp\Storage\Models\Charge::class,
 
         /*
-        * The fully qualified class name of the Plan model.
-        */
+         * The fully qualified class name of the Plan model.
+         */
         'plan' => Osiset\ShopifyApp\Storage\Models\Plan::class,
     ],
 
     'table_names' => [
         /*
-        * The table name for Charge model.
-        */
+         * The table name for Charge model.
+         */
         'charges' => 'charges',
 
         /*
-        * The table name for Plan model.
-        */
+         * The table name for Plan model.
+         */
         'plans' => 'plans',
 
         /*
