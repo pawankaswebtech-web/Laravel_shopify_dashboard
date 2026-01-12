@@ -53,7 +53,7 @@ class OrdersCreateJob implements ShouldQueue
             $this->logToJsonFile($filename, $internalData);
 
             // Send to Internal API
-            $this->sendToInternalSystem($internalData);
+            $this->sendToInternalSystem($filename, $internalData);
 
             // Transform for Local DB (Flattened structure if needed, or mapping)
             // Note: The original code used a flat structure for the Order model.
@@ -104,14 +104,14 @@ class OrdersCreateJob implements ShouldQueue
         file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT));
     }
 
-    private function sendToInternalSystem($data)
+    private function sendToInternalSystem($filename, $data)
     {
         // Mock sending to internal system
         // $url = env('INTERNAL_SYSTEM_URL');
         // if ($url) {
         //     Http::post($url, $data);
         // }
-        Log::info('Sent to internal system (Mock)', ['data' => $data]);
+        Log::info($filename, ['data' => $data]);
     }
 
     private function transformForInternalSystem($shopifyOrder)
@@ -134,6 +134,11 @@ class OrdersCreateJob implements ShouldQueue
         $shippingCode = 'GROUND_HOME_DELIVERY'; // Default
         if (isset($shopifyOrder['shipping_lines']) && count($shopifyOrder['shipping_lines']) > 0) {
             $shippingCode = $shopifyOrder['shipping_lines'][0]['code'] ?? $shippingCode;
+        }
+
+        $couponCode = null;
+        if (isset($shopifyOrder['discount_codes']) && count($shopifyOrder['discount_codes']) > 0) {
+            $couponCode = implode(',', array_column($shopifyOrder['discount_codes'], 'code'));
         }
 
         return [
@@ -164,7 +169,8 @@ class OrdersCreateJob implements ShouldQueue
             'fromwebsite' => 'Renelif', // As per req example
             'billingtype' => 'authnetcim', // As per req example or map from gateway
             'rows' => $rows,
-            'transactionid' => (string) $shopifyOrder['id']
+            'transactionid' => (string) $shopifyOrder['id'],
+            'coupon_code' => $couponCode
         ];
     }
 
@@ -204,7 +210,8 @@ class OrdersCreateJob implements ShouldQueue
             // Default statuses as they are not in the JSON structure for PUSH
             'order_status' => 'pending',
             'payment_status' => 'pending',
-            'fulfillment_status' => 'unfulfilled'
+            'fulfillment_status' => 'unfulfilled',
+            'coupon_code' => $data['coupon_code'] ?? null
         ];
     }
 }

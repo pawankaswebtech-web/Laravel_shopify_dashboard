@@ -5,6 +5,8 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+use Opcodes\LogViewer\Facades\LogViewer;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -21,6 +23,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        LogViewer::auth(function ($request) {
+            return $request->user();
+        });
     }
 }

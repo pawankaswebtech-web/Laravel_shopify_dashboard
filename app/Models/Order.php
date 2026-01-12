@@ -41,6 +41,7 @@ class Order extends Model
         'ship_phone',
         'comments',
         'totalpaid',
+        'coupon_code',
         'fromwebsite',
         'billingtype',
         'transactionid',

@@ -14,6 +14,9 @@ use App\Http\Controllers\OrderController;
 */
 
 Route::get('/', function (\Illuminate\Http\Request $request) {
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        return redirect()->route('home');
+    }
     if ($request->has('shop')) {
         return redirect()->route('home', $request->all());
     }

@@ -9,8 +9,9 @@
             <div>
                 <h1 style="font-size: 24px; font-weight: 600; color: #202223; margin: 0;">
                     {{ $shopDomain ?? Auth::user()->name }}
+                    
                 </h1>
-                <p style="color: #6d7175; margin-top: 4px;">Dashboard</p>
+                <p style="color: #6d7175; margin-top: 4px;"><a href="/log-viewer" >View Logs</a></p>
             </div>
             <ui-title-bar title="Dashboard"></ui-title-bar>
         </div>
