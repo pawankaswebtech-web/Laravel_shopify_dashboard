@@ -11,10 +11,7 @@
                     {{ $shopDomain ?? Auth::user()->name }}
                     
                 </h1>
-                
-            <a href="{{ url('/logs') }}" class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800">
-                View Logs
-            </a>
+                <p style="color: #6d7175; margin-top: 4px;"><a href="/log-viewer" >View Logs</a></p>
             </div>
             <ui-title-bar title="Dashboard"></ui-title-bar>
         </div>
