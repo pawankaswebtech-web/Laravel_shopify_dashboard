@@ -36,4 +36,7 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/api/orders', [OrderController::class, 'fetchOrders'])->name('orders.fetch');
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update');
     Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
+
+    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LaravelLogViewerController@index');
+
 });
