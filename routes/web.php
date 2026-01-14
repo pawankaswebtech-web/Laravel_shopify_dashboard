@@ -40,3 +40,5 @@ Route::middleware(['verify.shopify'])->group(function () {
 
 
 });
+  Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
+  Route::get('/order-details-view/{userId}', [OrderController::class, 'orderDetailView'])->name('orders.detailview');

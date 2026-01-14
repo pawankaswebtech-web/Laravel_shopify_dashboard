@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\User;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,18 @@ class OrderController extends Controller
 
         return view('orders.index', compact('orders'));
     }
-
+    public function orderDetail(Request $request)
+    {
+        $data = User::orderBy('created_at', 'desc')->get();
+        return view('orders.order-detail', compact( 'data'));
+    }
+    public function orderDetailView(Request $request, $userId)
+    {
+        $orderview = Order::where('user_id', $userId)
+        ->orderBy('created_at', 'desc')
+        ->get();
+        return view('orders.order-detail-view', compact( 'orderview'));
+    }
     // Fetch orders API (for external use)
     public function fetchOrders(Request $request)
     {
