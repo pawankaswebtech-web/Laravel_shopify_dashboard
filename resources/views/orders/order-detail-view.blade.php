@@ -54,6 +54,7 @@
                     <th class="border p-2" style="min-width: 100px;">payment_status </th>
                     <th class="border p-2" style="min-width: 100px;">fulfillment_status </th>
                     <th class="border p-2" style="min-width: 100px;">Date</th>
+                    <th class="border p-2" style="min-width: 100px;">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,6 +94,7 @@
                         <td class="border p-2">{{ $view->payment_status ?? '' }}</td>
                         <td class="border p-2">{{ $view->fulfillment_status ?? '' }}</td>
                         <td class="border p-2">{{ $view->created_at ? $view->created_at->format('Y-m-d H:i') : "" }}</td>
+                        <td class="border p-2"><a href="{{ route('orders.status',['shopOrderId' => $view->id]) }}" class="btn btn-info">Manage Status</a></td>
                     </tr>
                 @endif
             @empty

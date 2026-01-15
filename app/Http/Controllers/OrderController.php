@@ -5,6 +5,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Services\Shopify\OrderService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -37,6 +38,16 @@ class OrderController extends Controller
         ->orderBy('created_at', 'desc')
         ->get();
         return view('orders.order-detail-view', compact( 'orderview'));
+    }
+    public function OrderStatus(Request $request, $shopOrderId, OrderService $orderService)
+    {
+        $orderstatus = Order::where('id', $shopOrderId)
+        ->orderBy('created_at', 'desc')
+        ->firstOrFail();
+        $orderService->syncStatus($orderstatus, $request);
+        dd($orderService);
+        return back()->with('success', 'Order updated');
+
     }
     // Fetch orders API (for external use)
     public function fetchOrders(Request $request)
