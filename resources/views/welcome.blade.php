@@ -29,7 +29,6 @@
                             <th style="padding: 12px 16px; font-weight: 500;">Order ID</th>
                             <th style="padding: 12px 16px; font-weight: 500;">Customer</th>
                             <th style="padding: 12px 16px; font-weight: 500;">Date</th>
-                            <th style="padding: 12px 16px; font-weight: 500;">Status</th>
                             <th style="padding: 12px 16px; font-weight: 500;">Fulfillment</th>
                             <th style="padding: 12px 16px; font-weight: 500; text-align: right;">Total</th>
                             <th style="padding: 12px 16px; font-weight: 500; text-align: center;">Action</th>
@@ -50,12 +49,6 @@
                                 </td>
                                 <td style="padding: 12px 16px;">
                                     <span
-                                        style="background: {{ $order->order_status === 'paid' ? '#c3f4d6' : '#ffd79d' }}; color: {{ $order->order_status === 'paid' ? '#1f4836' : '#573b00' }}; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        {{ $order->order_status }}
-                                    </span>
-                                </td>
-                                <td style="padding: 12px 16px;">
-                                    <span
                                         style="background: {{ $order->fulfillment_status === 'fulfilled' ? '#c3f4d6' : '#e4e5e7' }}; color: {{ $order->fulfillment_status === 'fulfilled' ? '#1f4836' : '#454f5b' }}; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
                                         {{ $order->fulfillment_status }}
                                     </span>
@@ -71,7 +64,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" style="padding: 32px; text-align: center; color: #6d7175;">
+                                <td colspan="6" style="padding: 32px; text-align: center; color: #6d7175;">
                                     No orders found.
                                 </td>
                             </tr>

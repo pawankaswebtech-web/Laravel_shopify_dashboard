@@ -37,9 +37,13 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update');
     Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
 
-
-
 });
-  Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
-  Route::get('/order-details-view/{userId}', [OrderController::class, 'orderDetailView'])->name('orders.detailview');
-  Route::get('/order-manage-status/{shopOrderId}/status', [OrderController::class, 'OrderStatus'])->name('orders.status');
+
+
+Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
+Route::get('/order-details-view/{userId}', [OrderController::class, 'orderDetailView'])->name('orders.detailview');
+Route::get('/order-manage-status/{shopOrderId}/status', [OrderController::class, 'showOrderStatusForm'])->name('orders.status');
+Route::post('/order-manage-status/{shopOrderId}/status', [OrderController::class, 'OrderStatus'])->name('orders.status.update');
+
+// Webhook for internal system updates (Unauthenticated)
+Route::post('/order/order-updates', [OrderController::class, 'webhookUpdateStatus'])->name('webhook.order.update');

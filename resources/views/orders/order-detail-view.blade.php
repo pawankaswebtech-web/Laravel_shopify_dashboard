@@ -50,8 +50,6 @@
                     <th class="border p-2" style="min-width: 100px;">coupon_code </th>
                     <th class="border p-2" style="min-width: 100px;">billingtype </th>
                     <th class="border p-2" style="min-width: 100px;">transactionid </th>
-                    <th class="border p-2" style="min-width: 100px;">order_status </th>
-                    <th class="border p-2" style="min-width: 100px;">payment_status </th>
                     <th class="border p-2" style="min-width: 100px;">fulfillment_status </th>
                     <th class="border p-2" style="min-width: 100px;">Date</th>
                     <th class="border p-2" style="min-width: 100px;">Action</th>
@@ -90,8 +88,6 @@
                         <td class="border p-2">{{ $view->coupon_code ?? '' }}</td>
                         <td class="border p-2">{{ $view->billingtype ?? '' }}</td>
                         <td class="border p-2">{{ $view->transactionid ?? '' }}</td>
-                        <td class="border p-2">{{ $view->order_status ?? '' }}</td>
-                        <td class="border p-2">{{ $view->payment_status ?? '' }}</td>
                         <td class="border p-2">{{ $view->fulfillment_status ?? '' }}</td>
                         <td class="border p-2">{{ $view->created_at ? $view->created_at->format('Y-m-d H:i') : "" }}</td>
                         <td class="border p-2"><a href="{{ route('orders.status',['shopOrderId' => $view->id]) }}" class="btn btn-info">Manage Status</a></td>
