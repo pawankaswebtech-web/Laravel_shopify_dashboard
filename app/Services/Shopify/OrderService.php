@@ -82,7 +82,7 @@ class OrderService
                 }
             }
             GRAPHQL;
-            dd($query);
+           
             $response = $shop->api()->graph($query, ['id' => "gid://shopify/Order/{$orderstatus->shopify_order_id}"]);
 
             // Check for errors
