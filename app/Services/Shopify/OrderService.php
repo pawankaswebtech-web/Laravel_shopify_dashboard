@@ -8,14 +8,14 @@ class OrderService
     public function syncStatus($orderstatus, $request)
     {
         $shop = $orderstatus->user;
-
+        
         if (!$shop) {
             Log::error('Shop not found for order: ' . $orderstatus->id);
             return;
         }
 
         // Handle Fulfillment Status Update - FIXED: was checking 'unfulfilled', should check 'fulfilled'
-        if ($request->has('fulfillment_status') && $request->fulfillment_status === 'fulfilled' && $orderstatus->fulfillment_status !== 'fulfilled') {
+        if ($request->has('fulfillment_status')) {
             $this->fulfillOrder($orderstatus, $shop, $request);
         }
     }
@@ -82,7 +82,7 @@ class OrderService
                 }
             }
             GRAPHQL;
-
+            dd($query);
             $response = $shop->api()->graph($query, ['id' => "gid://shopify/Order/{$orderstatus->shopify_order_id}"]);
 
             // Check for errors
