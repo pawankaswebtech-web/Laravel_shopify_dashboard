@@ -46,7 +46,7 @@ class OrderController extends Controller
 
     public function OrderStatus(Request $request, $shopOrderId, OrderService $orderService)
     {
-        try {
+       // try {
             $orderstatus = Order::where('id', $shopOrderId)
                 ->orderBy('created_at', 'desc')
                 ->firstOrFail();
@@ -61,10 +61,10 @@ class OrderController extends Controller
 
             return redirect()->route('orders.detailview', ['userId' => $orderstatus->user_id])
                 ->with('success', 'Fulfillment status updated successfully');
-        } catch (\Exception $e) {
-            Log::error('Failed to update fulfillment status: ' . $e->getMessage());
-            return back()->with('error', 'Failed to update fulfillment status: ' . $e->getMessage());
-        }
+        // } catch (\Exception $e) {
+        //     Log::error('Failed to update fulfillment status: ' . $e->getMessage());
+        //     return back()->with('error', 'Failed to update fulfillment status: ' . $e->getMessage());
+        // }
     }
     // Fetch orders API (for external use)
     public function fetchOrders(Request $request)

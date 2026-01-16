@@ -59,7 +59,7 @@
     <div class="container">
         <h1>Welcome To Order Sync App</h1>
         <p>Currenlty Your Shop Is Not Authenticated.</p>
-        <a href="https://apps.shopify.com" class="btn">Install App</a>
+        <a href="/order-details" class="btn">View Orders</a>
     </div>
 </body>
 
