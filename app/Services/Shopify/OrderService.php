@@ -157,19 +157,19 @@ class OrderService
             $response = $shop->api()->graph($mutation, [
                 'fulfillment' => $fulfillmentInput
             ]);
-            dd($response);
+            //dd($response);
             // Check for errors
             if (isset($response['errors']) && !empty($response['errors'])) {
                 Log::error('GraphQL errors in fulfillmentCreateV2: ' . json_encode($response['errors']));
                 throw new \Exception('GraphQL errors: ' . json_encode($response['errors']));
             }
 
-            $userErrors = $response['body']['data']['fulfillmentCreateV2']['userErrors'] ?? [];
-            if (!empty($userErrors)) {
-                $errorMsg = $userErrors[0]['message'] ?? 'Unknown error';
-                Log::error('User errors in fulfillmentCreateV2: ' . $errorMsg);
-                throw new \Exception("Shopify Error: $errorMsg");
-            }
+            //$userErrors = $response['body']['data']['fulfillmentCreateV2']['userErrors'] ?? [];
+            // if (!empty($userErrors)) {
+            //     $errorMsg = $userErrors[0]['message'] ?? 'Unknown error';
+            //     Log::error('User errors in fulfillmentCreateV2: ' . $errorMsg);
+            //     throw new \Exception("Shopify Error: $errorMsg");
+            // }
 
             Log::info('Order fulfilled successfully', ['order_id' => $orderstatus->id]);
         } catch (\Exception $e) {
