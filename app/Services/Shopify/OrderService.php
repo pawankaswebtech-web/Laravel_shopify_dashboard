@@ -157,7 +157,7 @@ class OrderService
             $response = $shop->api()->graph($mutation, [
                 'fulfillment' => $fulfillmentInput
             ]);
-
+            dd($response);
             // Check for errors
             if (isset($response['errors']) && !empty($response['errors'])) {
                 Log::error('GraphQL errors in fulfillmentCreateV2: ' . json_encode($response['errors']));
