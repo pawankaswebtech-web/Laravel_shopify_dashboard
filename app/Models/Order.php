@@ -48,6 +48,8 @@ class Order extends Model
         'order_status',
         'payment_status',
         'fulfillment_status',
+        'payment_method',
+        'discount',
     ];
 
     /**

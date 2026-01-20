@@ -44,24 +44,18 @@ class OrdersCreateJob implements ShouldQueue
                 Log::error('Shop not found: ' . $this->shopDomain);
                 return;
             }
+            Log::info($this->data);
 
+            Log::info('currency', [
+        'discount' => $this->data['currency'] ?? 0,
+    ]);
             // Transform Shopify order data for Internal System (and DB)
             $internalData = $this->transformForInternalSystem($this->data);
 
             // Log to JSON file
             $filename = $this->shopDomain . '-' . ($this->data['name'] ?? $this->data['id']);
             $this->logToJsonFile($filename, $internalData);
-
-            // Send to Internal API
             $this->sendToInternalSystem($filename, $internalData);
-
-            // Transform for Local DB (Flattened structure if needed, or mapping)
-            // Note: The original code used a flat structure for the Order model.
-            // We need to map the 'internalData' back to the flat DB structure 
-            // OR reuse the transformation logic. 
-            // For simplicity and correctness, I will use a separate mapping for the DB 
-            // since the DB schema is flat but the JSON requirement has 'rows'.
-
             $dbData = $this->mapToDb($internalData, $shop->id);
 
             // Create or update order
@@ -121,15 +115,26 @@ class OrdersCreateJob implements ShouldQueue
         $customer = $shopifyOrder['customer'] ?? [];
 
         $rows = [];
-        if (isset($shopifyOrder['line_items'])) {
-            foreach ($shopifyOrder['line_items'] as $item) {
-                $rows[] = [
-                    'ItemCode' => $item['sku'] ?? $item['product_id'] ?? 'N/A',
-                    'Quantity' => $item['quantity'],
-                    'Price' => $item['price']
-                ];
-            }
-        }
+        // if (isset($shopifyOrder['line_items'])) {
+        //     foreach ($shopifyOrder['line_items'] as $item) {
+
+        //         $itemDiscount = 0;
+            
+        //         if (!empty($item['discount_allocations'])) {
+        //             foreach ($item['discount_allocations'] as $allocation) {
+        //                 $itemDiscount += (float) $allocation['amount'];
+        //             }
+        //         }
+            
+        //         $rows[] = [
+        //             'product_id' => $item['product_id'],
+        //             'sku'        => $item['sku'],
+        //             'price'      => $item['price'],
+        //             'quantity'   => $item['quantity'],
+        //             'discount'   => $itemDiscount, // ✅ only this product’s discount
+        //         ];
+        //     }
+        // }
 
         $shippingCode = 'GROUND_HOME_DELIVERY'; // Default
         if (isset($shopifyOrder['shipping_lines']) && count($shopifyOrder['shipping_lines']) > 0) {
@@ -147,7 +152,7 @@ class OrdersCreateJob implements ShouldQueue
             'orderid' => $shopifyOrder['name'] ?? '',
             'shippingtypeName' => $shippingCode,
             'phone' => $shopifyOrder['phone'] ?? $customer['phone'] ?? '0000000000',
-            'currency' => '$', // Hardcoded as per req example, or use $shopifyOrder['currency']
+            'currency' => $shopifyOrder['currency'] ?? '',
             'bill_name' => $billing['name'] ?? '',
             'bill_street' => $billing['address1'] ?? '',
             'bill_street2' => $billing['address2'] ?? '',
@@ -166,7 +171,10 @@ class OrdersCreateJob implements ShouldQueue
             'ship_phone' => $shipping['phone'] ?? '0000000000',
             'comments' => $shopifyOrder['note'] ?? '',
             'totalpaid' => $shopifyOrder['total_price'] ?? 0,
-            'fromwebsite' => 'Renelif', // As per req example
+            'payment_method' => $shopifyOrder['payment_gateway_names'][0] ?? 0,
+            'discount' => $shopifyOrder['total_discounts'] ?? 0,
+
+            'fromwebsite' =>  $this->shopDomain , // As per req example
             'billingtype' => 'authnetcim', // As per req example or map from gateway
             'rows' => $rows,
             'transactionid' => (string) $shopifyOrder['id'],
@@ -207,6 +215,8 @@ class OrdersCreateJob implements ShouldQueue
             'fromwebsite' => $data['fromwebsite'],
             'billingtype' => $data['billingtype'],
             'transactionid' => $data['transactionid'],
+            'discount' => $data['discount'] ?? 0,
+            'payment_method' => $data['payment_method'] ?? null,
             // Default statuses as they are not in the JSON structure for PUSH
             'order_status' => 'pending',
             'payment_status' => 'pending',

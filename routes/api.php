@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Api\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Webhook for internal system updates (Unauthenticated)
-Route::post('/webhook/order-update', [OrderController::class, 'webhookUpdateStatus'])->name('api.webhook.order.update');
+// Route::post('/webhook/order-update', [OrdersController::class, 'webhookUpdateStatus'])->name('api.webhook.order.update');
+Route::prefix('ordersdetail')->name('api.orders.')->group(function () {
+    Route::get('/', [OrderController::class, 'index'])->name('index');
+    Route::get('{userId}', [OrderController::class, 'show'])->name('show');
+});
+
+

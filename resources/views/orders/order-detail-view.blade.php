@@ -30,7 +30,6 @@
                     <th class="border p-2" style="min-width: 100px;">name</th>
                     <th class="border p-2" style="min-width: 100px;">email </th>
                     <th class="border p-2" style="min-width: 100px;">phone </th>
-                    <th class="border p-2" style="min-width: 100px;">Currency </th>
                     <th class="border p-2" style="min-width: 180px;">Billing Name </th>
                     <th class="border p-2" style="min-width: 180px;">Billing Street </th>
                     <th class="border p-2" style="min-width: 180px;">Billing Street2 </th>
@@ -50,6 +49,10 @@
                     <th class="border p-2" style="min-width: 100px;">coupon_code </th>
                     <th class="border p-2" style="min-width: 100px;">billingtype </th>
                     <th class="border p-2" style="min-width: 100px;">transactionid </th>
+                    <th class="border p-2" style="min-width: 100px;">From Website </th>
+                    <th class="border p-2" style="min-width: 100px;">Currency </th>
+                    <th class="border p-2" style="min-width: 100px;">Payment Method </th>
+                    <th class="border p-2" style="min-width: 100px;">Discount amount </th>
                     <th class="border p-2" style="min-width: 100px;">fulfillment_status </th>
                     <th class="border p-2" style="min-width: 100px;">Date</th>
                     <th class="border p-2" style="min-width: 100px;">Action</th>
@@ -68,7 +71,6 @@
                         <td class="border p-2">{{ $view->clientname ?? '' }}</td>
                         <td class="border p-2">{{ $view->clientemail ?? '' }}</td>
                         <td class="border p-2">{{ $view->phone ?? '' }}</td>
-                        <td class="border p-2">{{ $view->currency ?? '' }}</td>
                         <td class="border p-2">{{ $view->bill_name ?? '' }}</td>
                         <td class="border p-2">{{ $view->bill_street ?? '' }}</td>
                         <td class="border p-2">{{ $view->bill_street2 ?? '' }}</td>
@@ -88,6 +90,10 @@
                         <td class="border p-2">{{ $view->coupon_code ?? '' }}</td>
                         <td class="border p-2">{{ $view->billingtype ?? '' }}</td>
                         <td class="border p-2">{{ $view->transactionid ?? '' }}</td>
+                        <td class="border p-2">{{ $view->fromwebsite ?? '' }}</td>
+                        <td class="border p-2">{{ $view->currency ?? '' }}</td>
+                        <td class="border p-2">{{ $view->payment_method ?? '' }}</td>
+                        <td class="border p-2">{{ $view->discount ?? '' }}</td>
                         <td class="border p-2">{{ $view->fulfillment_status ?? '' }}</td>
                         <td class="border p-2">{{ $view->created_at ? $view->created_at->format('Y-m-d H:i') : "" }}</td>
                         <td class="border p-2"><a href="{{ route('orders.status',['shopOrderId' => $view->id]) }}" class="btn btn-info">Manage Status</a></td>
