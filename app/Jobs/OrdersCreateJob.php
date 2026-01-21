@@ -46,9 +46,8 @@ class OrdersCreateJob implements ShouldQueue
             }
             Log::info($this->data);
 
-            Log::info('currency', [
-        'discount' => $this->data['currency'] ?? 0,
-    ]);
+
+          
             // Transform Shopify order data for Internal System (and DB)
             $internalData = $this->transformForInternalSystem($this->data);
 
@@ -74,9 +73,11 @@ class OrdersCreateJob implements ShouldQueue
                         'order_id' => $order->id,
                         'ItemCode' => $item['ItemCode'],
                         'Quantity' => $item['Quantity'],
-                        'Price' => $item['Price']
+                        'Price'    => $item['Price'],
+                        'discount' => $item['Discount'] ?? 0,
                     ]);
                 }
+                
             }
 
             Log::info('Order processed successfully', [
@@ -106,6 +107,7 @@ class OrdersCreateJob implements ShouldQueue
         //     Http::post($url, $data);
         // }
         Log::info($filename, ['data' => $data]);
+       
     }
 
     private function transformForInternalSystem($shopifyOrder)
@@ -115,26 +117,25 @@ class OrdersCreateJob implements ShouldQueue
         $customer = $shopifyOrder['customer'] ?? [];
 
         $rows = [];
-        // if (isset($shopifyOrder['line_items'])) {
-        //     foreach ($shopifyOrder['line_items'] as $item) {
+        if (isset($shopifyOrder['line_items'])) {
+            foreach ($shopifyOrder['line_items'] as $item) {
 
-        //         $itemDiscount = 0;
+                $itemDiscount = 0;
             
-        //         if (!empty($item['discount_allocations'])) {
-        //             foreach ($item['discount_allocations'] as $allocation) {
-        //                 $itemDiscount += (float) $allocation['amount'];
-        //             }
-        //         }
+                if (!empty($item['discount_allocations'])) {
+                    foreach ($item['discount_allocations'] as $allocation) {
+                        $itemDiscount += (float) $allocation['amount'];
+                    }
+                }
             
-        //         $rows[] = [
-        //             'product_id' => $item['product_id'],
-        //             'sku'        => $item['sku'],
-        //             'price'      => $item['price'],
-        //             'quantity'   => $item['quantity'],
-        //             'discount'   => $itemDiscount, // ✅ only this product’s discount
-        //         ];
-        //     }
-        // }
+                $rows[] = [
+                    'ItemCode' => $item['sku'] ?? $item['product_id'],
+                    'Quantity' => $item['quantity'],
+                    'Price'    => $item['price'],
+                    'Discount' => $itemDiscount,
+                ];
+            }
+        }
 
         $shippingCode = 'GROUND_HOME_DELIVERY'; // Default
         if (isset($shopifyOrder['shipping_lines']) && count($shopifyOrder['shipping_lines']) > 0) {
@@ -149,7 +150,7 @@ class OrdersCreateJob implements ShouldQueue
         return [
             'clientemail' => $shopifyOrder['email'] ?? '',
             'clientname' => trim(($customer['first_name'] ?? '') . ' ' . ($customer['last_name'] ?? '')),
-            'orderid' => $shopifyOrder['name'] ?? '',
+           'orderid' => ltrim($shopifyOrder['name'] ?? '', '#'),
             'shippingtypeName' => $shippingCode,
             'phone' => $shopifyOrder['phone'] ?? $customer['phone'] ?? '0000000000',
             'currency' => $shopifyOrder['currency'] ?? '',
@@ -175,7 +176,7 @@ class OrdersCreateJob implements ShouldQueue
             'discount' => $shopifyOrder['total_discounts'] ?? 0,
 
             'fromwebsite' =>  $this->shopDomain , // As per req example
-            'billingtype' => 'authnetcim', // As per req example or map from gateway
+            'billingtype' =>  $shopifyOrder['payment_gateway_names'][0] ?? 0, // As per req example or map from gateway
             'rows' => $rows,
             'transactionid' => (string) $shopifyOrder['id'],
             'coupon_code' => $couponCode
@@ -190,7 +191,9 @@ class OrdersCreateJob implements ShouldQueue
             'shopify_order_id' => $data['transactionid'], // Using ID as transactionID based on observing 'id' in req
             'clientemail' => $data['clientemail'],
             'clientname' => $data['clientname'],
-            'orderid' => $data['orderid'],
+            'orderid' => $data['orderid'] ?? '',
+
+
             'shippingtypeName' => $data['shippingtypeName'],
             'phone' => $data['phone'],
             'currency' => $data['currency'],
@@ -221,7 +224,8 @@ class OrdersCreateJob implements ShouldQueue
             'order_status' => 'pending',
             'payment_status' => 'pending',
             'fulfillment_status' => 'unfulfilled',
-            'coupon_code' => $data['coupon_code'] ?? null
+            'coupon_code' => $data['coupon_code'] ?? null,
+
         ];
     }
 }
