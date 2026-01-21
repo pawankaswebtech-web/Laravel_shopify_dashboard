@@ -13,25 +13,18 @@ use App\Http\Controllers\OrderController;
 |
 */
 
-Route::get('/', function (\Illuminate\Http\Request $request) {
-    if (\Illuminate\Support\Facades\Auth::check()) {
-        return redirect()->route('home');
-    }
-    if ($request->has('shop')) {
-        return redirect()->route('home', $request->all());
-    }
-    return view('landing');
-})->name('landing');
+// Route::get('/', function (\Illuminate\Http\Request $request) {
+//     if (\Illuminate\Support\Facades\Auth::check()) {
+//         return redirect()->route('home');
+//     }
+//     if ($request->has('shop')) {
+//         return redirect()->route('home', $request->all());
+//     }
+//     return view('landing');
+// })->name('landing');
 Route::middleware(['verify.shopify'])->group(function () {
-    Route::get('/app', function () {
-        $shop = \Illuminate\Support\Facades\Auth::user();
-        $orders = \App\Models\Order::where('user_id', $shop->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('welcome', compact('orders'));
-    })->name('home');
-
+ 
+    Route::get('/', [OrderController::class, 'new'])->name('home');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/api/orders', [OrderController::class, 'fetchOrders'])->name('orders.fetch');
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update');
