@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 class OrderController extends Controller
 {
+      
+    public function HomeRoute(Request $request)
+    {
+        $shop = Auth::user();
+        $orders = Order::where('user_id', $shop->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return view('welcome', compact('orders'));
+    }
+    
     // Display orders list
     public function index(Request $request)
     {

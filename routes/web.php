@@ -22,9 +22,10 @@ use App\Http\Controllers\OrderController;
 //     }
 //     return view('landing');
 // })->name('landing');
+
 Route::middleware(['verify.shopify'])->group(function () {
- 
-    Route::get('/', [OrderController::class, 'new'])->name('home');
+    Route::get('/', [OrderController::class, 'HomeRoute'])->name('home');
+
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/api/orders', [OrderController::class, 'fetchOrders'])->name('orders.fetch');
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update');

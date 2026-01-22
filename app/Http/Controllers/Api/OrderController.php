@@ -9,18 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-
-
-
-    public function new()
-    {
-        $shop = Auth::user();
-        $orders = Order::where('user_id', $shop->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-        return view('welcome', compact('orders'));
-    }
-    
+ 
     public function index(Request $request)
     {
         $orders = Order::with('items')->get();
