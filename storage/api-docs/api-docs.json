@@ -205,17 +205,14 @@
             "OrderItem": {
                 "properties": {
                     "item_code": {
-                        "type": "string",
-                        "example": "SKU123"
+                        "type": "string"
                     },
                     "quantity": {
-                        "type": "integer",
-                        "example": 2
+                        "type": "integer"
                     },
                     "price": {
                         "type": "number",
-                        "format": "float",
-                        "example": 49.99
+                        "format": "float"
                     }
                 },
                 "type": "object"
@@ -223,142 +220,108 @@
             "Order": {
                 "properties": {
                     "id": {
-                        "type": "integer",
-                        "example": 1
+                        "type": "integer"
                     },
                     "store_id": {
-                        "type": "integer",
-                        "example": 10
+                        "type": "integer"
                     },
                     "storeid": {
-                        "type": "integer",
-                        "example": 10
+                        "type": "integer"
                     },
                     "user_id": {
-                        "type": "integer",
-                        "example": 5
+                        "type": "integer"
                     },
                     "clientname": {
-                        "type": "string",
-                        "example": "John Doe"
+                        "type": "string"
                     },
                     "clientemail": {
-                        "type": "string",
-                        "example": "john@example.com"
+                        "type": "string"
                     },
                     "orderid": {
-                        "type": "string",
-                        "example": "ORD123"
+                        "type": "string"
                     },
                     "shippingtypeName": {
-                        "type": "string",
-                        "example": "Express"
+                        "type": "string"
                     },
                     "phone": {
-                        "type": "string",
-                        "example": "9876543210"
+                        "type": "string"
                     },
                     "currency": {
-                        "type": "string",
-                        "example": "USD"
+                        "type": "string"
                     },
                     "bill_name": {
-                        "type": "string",
-                        "example": "John Doe"
+                        "type": "string"
                     },
                     "bill_street": {
-                        "type": "string",
-                        "example": "Street 1"
+                        "type": "string"
                     },
                     "bill_street2": {
-                        "type": "string",
-                        "example": "Street 2"
+                        "type": "string"
                     },
                     "bill_city": {
-                        "type": "string",
-                        "example": "New York"
+                        "type": "string"
                     },
                     "bill_country": {
-                        "type": "string",
-                        "example": "USA"
+                        "type": "string"
                     },
                     "bill_state": {
-                        "type": "string",
-                        "example": "NY"
+                        "type": "string"
                     },
                     "bill_zipCode": {
-                        "type": "string",
-                        "example": "10001"
+                        "type": "string"
                     },
                     "bill_phone": {
-                        "type": "string",
-                        "example": "9876543210"
+                        "type": "string"
                     },
                     "ship_name": {
-                        "type": "string",
-                        "example": "John Doe"
+                        "type": "string"
                     },
                     "ship_street": {
-                        "type": "string",
-                        "example": "Street 1"
+                        "type": "string"
                     },
                     "ship_street2": {
-                        "type": "string",
-                        "example": "Street 2"
+                        "type": "string"
                     },
                     "ship_city": {
-                        "type": "string",
-                        "example": "New York"
+                        "type": "string"
                     },
                     "ship_country": {
-                        "type": "string",
-                        "example": "USA"
+                        "type": "string"
                     },
                     "ship_state": {
-                        "type": "string",
-                        "example": "NY"
+                        "type": "string"
                     },
                     "ship_zipCode": {
-                        "type": "string",
-                        "example": "10001"
+                        "type": "string"
                     },
                     "ship_phone": {
-                        "type": "string",
-                        "example": "9876543210"
+                        "type": "string"
                     },
                     "comments": {
-                        "type": "string",
-                        "example": "Handle with care"
+                        "type": "string"
                     },
                     "totalpaid": {
                         "type": "number",
-                        "format": "float",
-                        "example": 150.75
+                        "format": "float"
                     },
                     "fromwebsite": {
-                        "type": "string",
-                        "example": "Shopify"
+                        "type": "string"
                     },
                     "billingtype": {
-                        "type": "string",
-                        "example": "Prepaid"
+                        "type": "string"
                     },
                     "transactionid": {
-                        "type": "string",
-                        "example": "TXN12345"
+                        "type": "string"
                     },
                     "payment_method": {
-                        "type": "string",
-                        "example": "credit_card"
+                        "type": "string"
                     },
                     "discount": {
                         "type": "number",
-                        "format": "float",
-                        "example": 10
+                        "format": "float"
                     },
                     "coupon_code": {
-                        "type": "string",
-                        "example": "NEW10"
+                        "type": "string"
                     },
                     "items": {
                         "type": "array",
@@ -372,12 +335,10 @@
             "OrdersResponse": {
                 "properties": {
                     "success": {
-                        "type": "boolean",
-                        "example": true
+                        "type": "boolean"
                     },
                     "count": {
-                        "type": "integer",
-                        "example": 2
+                        "type": "integer"
                     },
                     "orders": {
                         "type": "array",
@@ -391,8 +352,7 @@
             "SingleOrderResponse": {
                 "properties": {
                     "success": {
-                        "type": "boolean",
-                        "example": true
+                        "type": "boolean"
                     },
                     "order": {
                         "$ref": "#/components/schemas/Order"
@@ -403,16 +363,13 @@
             "OrderPrefixResponse": {
                 "properties": {
                     "success": {
-                        "type": "boolean",
-                        "example": true
+                        "type": "boolean"
                     },
                     "count": {
-                        "type": "integer",
-                        "example": 2
+                        "type": "integer"
                     },
                     "prefix_used": {
-                        "type": "string",
-                        "example": "ORD123"
+                        "type": "string"
                     },
                     "orders": {
                         "type": "array",
