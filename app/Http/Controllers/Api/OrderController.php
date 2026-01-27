@@ -82,7 +82,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/orders/{userId}",
+     *     path="/api/storeid/{userId}",
      *     summary="Get orders by user ID",
      *     description="Returns all orders with items for a specific user",
      *     tags={"Orders"},
