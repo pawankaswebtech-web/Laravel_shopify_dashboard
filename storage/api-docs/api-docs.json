@@ -41,14 +41,14 @@
                 }
             }
         },
-        "/api/storeid/{userId}": {
+        "/api/ordersdetail/storeid/{userId}": {
             "get": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Get orders by user ID",
                 "description": "Returns all orders with items for a specific user",
-                "operationId": "25cb2f2ffcc6c317ba4aa673c472af70",
+                "operationId": "5ac83c8cd74c6852f4526ac12d1eb71a",
                 "parameters": [
                     {
                         "name": "userId",
@@ -95,14 +95,14 @@
                 }
             }
         },
-        "/api/orderprefix/{orderId}": {
+        "/api/ordersdetail/orderprefix/{orderId}": {
             "get": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Get orders by Order ID prefix",
                 "description": "Returns all orders matching the order ID prefix",
-                "operationId": "4bdd3d3d060d60386f1cf00584a3f38e",
+                "operationId": "68ce30fe23f64c71cc9a6b2e2167cc3a",
                 "parameters": [
                     {
                         "name": "orderId",
@@ -149,14 +149,14 @@
                 }
             }
         },
-        "/api/orderid/{id}": {
+        "/api/ordersdetail/orderid/{id}": {
             "get": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Get order by ID",
                 "description": "Returns a single order with items for a specific ID",
-                "operationId": "8dfb81646644c2a932ecba5bf626de08",
+                "operationId": "994937d3c785f3887489a3c44bbfaca4",
                 "parameters": [
                     {
                         "name": "id",

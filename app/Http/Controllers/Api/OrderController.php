@@ -167,7 +167,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/storeid/{userId}",
+     *     path="/api/ordersdetail/storeid/{userId}",
      *     summary="Get orders by user ID",
      *     description="Returns all orders with items for a specific user",
      *     tags={"Orders"},
@@ -258,7 +258,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/orderprefix/{orderId}",
+     *     path="/api/ordersdetail/orderprefix/{orderId}",
      *     summary="Get orders by Order ID prefix",
      *     description="Returns all orders matching the order ID prefix",
      *     tags={"Orders"},
@@ -368,7 +368,7 @@ class OrderController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/orderid/{id}",
+     *     path="/api/ordersdetail/orderid/{id}",
      *     summary="Get order by ID",
      *     description="Returns a single order with items for a specific ID",
      *     tags={"Orders"},
