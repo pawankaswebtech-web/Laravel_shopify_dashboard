@@ -1,0 +1,164 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Your API Documentation",
+        "description": "Shopify Order APIs",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "Local Server"
+        },
+        {
+            "url": "https://633e9b22b122.ngrok-free.app/",
+            "description": "Production Server"
+        }
+    ],
+    "paths": {
+        "/api/ordersdetail": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get all orders with items",
+                "description": "Returns a list of orders along with their items",
+                "operationId": "69b5b31b9ea7435df87c4c0a295beaac",
+                "responses": {
+                    "200": {
+                        "description": "Orders fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "orders": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "store_id": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "clientname": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "clientemail": {
+                                                        "type": "string",
+                                                        "example": "john@example.com"
+                                                    },
+                                                    "orderid": {
+                                                        "type": "string",
+                                                        "example": "ORD123"
+                                                    },
+                                                    "shippingtypeName": {
+                                                        "type": "string",
+                                                        "example": "Express"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "example": "9876543210"
+                                                    },
+                                                    "currency": {
+                                                        "type": "string",
+                                                        "example": "USD"
+                                                    },
+                                                    "bill_name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "bill_city": {
+                                                        "type": "string",
+                                                        "example": "New York"
+                                                    },
+                                                    "bill_country": {
+                                                        "type": "string",
+                                                        "example": "USA"
+                                                    },
+                                                    "ship_name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "ship_city": {
+                                                        "type": "string",
+                                                        "example": "New York"
+                                                    },
+                                                    "ship_country": {
+                                                        "type": "string",
+                                                        "example": "USA"
+                                                    },
+                                                    "totalpaid": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 150.75
+                                                    },
+                                                    "payment_method": {
+                                                        "type": "string",
+                                                        "example": "credit_card"
+                                                    },
+                                                    "discount": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 10
+                                                    },
+                                                    "coupon_code": {
+                                                        "type": "string",
+                                                        "example": "NEW10"
+                                                    },
+                                                    "items": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "item_code": {
+                                                                    "type": "string",
+                                                                    "example": "SKU123"
+                                                                },
+                                                                "quantity": {
+                                                                    "type": "integer",
+                                                                    "example": 2
+                                                                },
+                                                                "price": {
+                                                                    "type": "number",
+                                                                    "format": "float",
+                                                                    "example": 49.99
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Orders",
+            "description": "Orders"
+        }
+    ]
+}

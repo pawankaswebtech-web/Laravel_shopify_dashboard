@@ -6,10 +6,72 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Annotations as OA;
 
 class OrderController extends Controller
 {
- 
+    /**
+ * @OA\Get(
+ *     path="/api/ordersdetail",
+ *     summary="Get all orders with items",
+ *     description="Returns a list of orders along with their items",
+ *     tags={"Orders"},
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="Orders fetched successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="count", type="integer", example=2),
+ *             @OA\Property(
+ *                 property="orders",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="store_id", type="integer", example=10),
+ *                     @OA\Property(property="clientname", type="string", example="John Doe"),
+ *                     @OA\Property(property="clientemail", type="string", example="john@example.com"),
+ *                     @OA\Property(property="orderid", type="string", example="ORD123"),
+ *                     @OA\Property(property="shippingtypeName", type="string", example="Express"),
+ *                     @OA\Property(property="phone", type="string", example="9876543210"),
+ *                     @OA\Property(property="currency", type="string", example="USD"),
+ *
+ *                     @OA\Property(property="bill_name", type="string", example="John Doe"),
+ *                     @OA\Property(property="bill_city", type="string", example="New York"),
+ *                     @OA\Property(property="bill_country", type="string", example="USA"),
+ *
+ *                     @OA\Property(property="ship_name", type="string", example="John Doe"),
+ *                     @OA\Property(property="ship_city", type="string", example="New York"),
+ *                     @OA\Property(property="ship_country", type="string", example="USA"),
+ *
+ *                     @OA\Property(property="totalpaid", type="number", format="float", example=150.75),
+ *                     @OA\Property(property="payment_method", type="string", example="credit_card"),
+ *                     @OA\Property(property="discount", type="number", format="float", example=10),
+ *                     @OA\Property(property="coupon_code", type="string", example="NEW10"),
+ *
+ *                     @OA\Property(
+ *                         property="items",
+ *                         type="array",
+ *                         @OA\Items(
+ *                             type="object",
+ *                             @OA\Property(property="item_code", type="string", example="SKU123"),
+ *                             @OA\Property(property="quantity", type="integer", example=2),
+ *                             @OA\Property(property="price", type="number", format="float", example=49.99)
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized"
+ *     )
+ * )
+ */
     public function index(Request $request)
     {
         $orders = Order::with('items')->get();
@@ -62,6 +124,91 @@ class OrderController extends Controller
             'orders'  => $formattedOrders,
         ]);
     }
+
+    /**
+ * @OA\Get(
+ *     path="/api/orders/{userId}",
+ *     summary="Get orders by user ID",
+ *     description="Returns all orders with items for a specific user",
+ *     tags={"Orders"},
+ *
+ *     @OA\Parameter(
+ *         name="userId",
+ *         in="path",
+ *         required=true,
+ *         description="User ID",
+ *         @OA\Schema(type="integer", example=1)
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="Orders fetched successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="count", type="integer", example=1),
+ *             @OA\Property(
+ *                 property="orders",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="user_id", type="integer", example=5),
+ *                     @OA\Property(property="clientname", type="string", example="John Doe"),
+ *                     @OA\Property(property="clientemail", type="string", example="john@example.com"),
+ *                     @OA\Property(property="orderid", type="string", example="ORD123"),
+ *                     @OA\Property(property="shippingtypeName", type="string", example="Express"),
+ *                     @OA\Property(property="phone", type="string", example="9876543210"),
+ *                     @OA\Property(property="currency", type="string", example="USD"),
+ *
+ *                     @OA\Property(property="bill_name", type="string", example="John Doe"),
+ *                     @OA\Property(property="bill_street", type="string", example="Street 1"),
+ *                     @OA\Property(property="bill_street2", type="string", example="Street 2"),
+ *                     @OA\Property(property="bill_city", type="string", example="New York"),
+ *                     @OA\Property(property="bill_country", type="string", example="USA"),
+ *                     @OA\Property(property="bill_state", type="string", example="NY"),
+ *                     @OA\Property(property="bill_zipCode", type="string", example="10001"),
+ *                     @OA\Property(property="bill_phone", type="string", example="9876543210"),
+ *
+ *                     @OA\Property(property="ship_name", type="string", example="John Doe"),
+ *                     @OA\Property(property="ship_street", type="string", example="Street 1"),
+ *                     @OA\Property(property="ship_street2", type="string", example="Street 2"),
+ *                     @OA\Property(property="ship_city", type="string", example="New York"),
+ *                     @OA\Property(property="ship_country", type="string", example="USA"),
+ *                     @OA\Property(property="ship_state", type="string", example="NY"),
+ *                     @OA\Property(property="ship_zipCode", type="string", example="10001"),
+ *                     @OA\Property(property="ship_phone", type="string", example="9876543210"),
+ *
+ *                     @OA\Property(property="comments", type="string", example="Handle with care"),
+ *                     @OA\Property(property="totalpaid", type="number", format="float", example=150.75),
+ *                     @OA\Property(property="fromwebsite", type="string", example="Shopify"),
+ *                     @OA\Property(property="billingtype", type="string", example="Prepaid"),
+ *                     @OA\Property(property="transactionid", type="string", example="TXN12345"),
+ *                     @OA\Property(property="payment_method", type="string", example="credit_card"),
+ *                     @OA\Property(property="discount", type="number", format="float", example=10),
+ *                     @OA\Property(property="coupon_code", type="string", example="NEW10"),
+ *
+ *                     @OA\Property(
+ *                         property="items",
+ *                         type="array",
+ *                         @OA\Items(
+ *                             type="object",
+ *                             @OA\Property(property="item_code", type="string", example="SKU123"),
+ *                             @OA\Property(property="quantity", type="integer", example=2),
+ *                             @OA\Property(property="price", type="number", format="float", example=49.99)
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=404,
+ *         description="Orders not found"
+ *     )
+ * )
+ */
 
    public function show($userId)
     {
