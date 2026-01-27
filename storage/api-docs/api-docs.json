@@ -41,14 +41,14 @@
                 }
             }
         },
-        "/api/orders/{userId}": {
+        "/api/storeid/{userId}": {
             "get": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Get orders by user ID",
                 "description": "Returns all orders with items for a specific user",
-                "operationId": "1312bac30463d477d827fb21a263195e",
+                "operationId": "25cb2f2ffcc6c317ba4aa673c472af70",
                 "parameters": [
                     {
                         "name": "userId",
@@ -93,8 +93,7 @@
                         "description": "Order ID",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "example": 1
+                            "type": "string"
                         }
                     }
                 ],
@@ -104,7 +103,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrdersResponse"
+                                    "$ref": "#/components/schemas/OrderPrefixResponse"
                                 }
                             }
                         }
@@ -125,7 +124,7 @@
                 "operationId": "8dfb81646644c2a932ecba5bf626de08",
                 "parameters": [
                     {
-                        "name": "Id",
+                        "name": "id",
                         "in": "path",
                         "description": "ID",
                         "required": true,
@@ -141,7 +140,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OrdersResponse"
+                                    "$ref": "#/components/schemas/SingleOrderResponse"
                                 }
                             }
                         }
@@ -180,6 +179,10 @@
                         "example": 1
                     },
                     "store_id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "storeid": {
                         "type": "integer",
                         "example": 10
                     },
@@ -327,6 +330,41 @@
                     "count": {
                         "type": "integer",
                         "example": 2
+                    },
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Order"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "SingleOrderResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "order": {
+                        "$ref": "#/components/schemas/Order"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderPrefixResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "prefix_used": {
+                        "type": "string",
+                        "example": "ORD123"
                     },
                     "orders": {
                         "type": "array",
