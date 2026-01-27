@@ -73,7 +73,24 @@
                         }
                     },
                     "404": {
-                        "description": "Orders not found"
+                        "description": "Orders not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No orders found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -83,17 +100,18 @@
                 "tags": [
                     "Orders"
                 ],
-                "summary": "Get orders by Order ID",
-                "description": "Returns all orders with items for a specific Order Id",
+                "summary": "Get orders by Order ID prefix",
+                "description": "Returns all orders matching the order ID prefix",
                 "operationId": "4bdd3d3d060d60386f1cf00584a3f38e",
                 "parameters": [
                     {
                         "name": "orderId",
                         "in": "path",
-                        "description": "Order ID",
+                        "description": "Order ID or prefix (e.g., ORD123, #ORD1234567)",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "ORD123"
                         }
                     }
                 ],
@@ -109,7 +127,24 @@
                         }
                     },
                     "404": {
-                        "description": "Orders not found"
+                        "description": "Orders not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No orders found for this prefix"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -119,14 +154,14 @@
                 "tags": [
                     "Orders"
                 ],
-                "summary": "Get orders by ID",
-                "description": "Returns all orders with items for a specific Id",
+                "summary": "Get order by ID",
+                "description": "Returns a single order with items for a specific ID",
                 "operationId": "8dfb81646644c2a932ecba5bf626de08",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID",
+                        "description": "Order ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -136,7 +171,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Orders fetched successfully",
+                        "description": "Order fetched successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -146,7 +181,24 @@
                         }
                     },
                     "404": {
-                        "description": "Orders not found"
+                        "description": "Order not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }

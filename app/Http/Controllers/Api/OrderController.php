@@ -185,17 +185,28 @@ class OrderController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Orders not found"
+     *         description="Orders not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No orders found")
+     *         )
      *     )
      * )
      */
     public function show($userId)
     {
-        $order = Order::with('items')
+        $orders = Order::with('items')
             ->where('user_id', $userId)
             ->get();
 
-        $formattedOrderbyid = $order->map(function ($order) {
+        if ($orders->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No orders found'
+            ], 404);
+        }
+
+        $formattedOrderbyid = $orders->map(function ($order) {
             return [
                 'id' => $order->id,
                 'storeid' => $order->user_id,
@@ -248,15 +259,15 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/orderprefix/{orderId}",
-     *     summary="Get orders by Order ID",
-     *     description="Returns all orders with items for a specific Order Id",
+     *     summary="Get orders by Order ID prefix",
+     *     description="Returns all orders matching the order ID prefix",
      *     tags={"Orders"},
      *     @OA\Parameter(
      *         name="orderId",
      *         in="path",
      *         required=true,
-     *         description="Order ID",
-     *         @OA\Schema(type="string")
+     *         description="Order ID or prefix (e.g., ORD123, #ORD1234567)",
+     *         @OA\Schema(type="string", example="ORD123")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -265,7 +276,11 @@ class OrderController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Orders not found"
+     *         description="Orders not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No orders found for this prefix")
+     *         )
      *     )
      * )
      */
@@ -300,6 +315,7 @@ class OrderController extends Controller
                 'message' => 'No orders found for this prefix'
             ], 404);
         }
+        
         return response()->json([
             'success' => true,
             'count' => $orders->count(),
@@ -314,7 +330,6 @@ class OrderController extends Controller
                     'shippingtypeName' => $order->shippingtypeName,
                     'phone' => $order->phone,
                     'currency' => $order->currency,
-
                     'bill_name' => $order->bill_name,
                     'bill_street' => $order->bill_street,
                     'bill_street2' => $order->bill_street2,
@@ -323,7 +338,6 @@ class OrderController extends Controller
                     'bill_state' => $order->bill_state,
                     'bill_zipCode' => $order->bill_zipCode,
                     'bill_phone' => $order->bill_phone,
-
                     'ship_name' => $order->ship_name,
                     'ship_street' => $order->ship_street,
                     'ship_street2' => $order->ship_street2,
@@ -332,7 +346,6 @@ class OrderController extends Controller
                     'ship_state' => $order->ship_state,
                     'ship_zipCode' => $order->ship_zipCode,
                     'ship_phone' => $order->ship_phone,
-
                     'comments' => $order->comments,
                     'totalpaid' => $order->totalpaid,
                     'fromwebsite' => $order->fromwebsite,
@@ -341,7 +354,6 @@ class OrderController extends Controller
                     'payment_method' => $order->payment_method,
                     'discount' => $order->discount,
                     'coupon_code' => $order->coupon_code,
-
                     'items' => $order->items->map(function ($item) {
                         return [
                             'item_code' => $item->ItemCode,
@@ -357,24 +369,28 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/orderid/{id}",
-     *     summary="Get orders by ID",
-     *     description="Returns all orders with items for a specific Id",
+     *     summary="Get order by ID",
+     *     description="Returns a single order with items for a specific ID",
      *     tags={"Orders"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="ID",
+     *         description="Order ID",
      *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Orders fetched successfully",
+     *         description="Order fetched successfully",
      *         @OA\JsonContent(ref="#/components/schemas/SingleOrderResponse")
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Orders not found"
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found")
+     *         )
      *     )
      * )
      */
@@ -384,19 +400,22 @@ class OrderController extends Controller
             ->where('id', $Id)
             ->first();
 
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
         $formattedOrder = [
             'id' => $order->id,
             'user_id' => $order->user_id,
-
             'clientname' => $order->clientname,
             'clientemail' => $order->clientemail,
             'orderid' => $order->orderid,
-
             'shippingtypeName' => $order->shippingtypeName,
             'phone' => $order->phone,
             'currency' => $order->currency,
-
-            // Billing
             'bill_name' => $order->bill_name,
             'bill_street' => $order->bill_street,
             'bill_street2' => $order->bill_street2,
@@ -405,8 +424,6 @@ class OrderController extends Controller
             'bill_state' => $order->bill_state,
             'bill_zipCode' => $order->bill_zipCode,
             'bill_phone' => $order->bill_phone,
-
-            // Shipping
             'ship_name' => $order->ship_name,
             'ship_street' => $order->ship_street,
             'ship_street2' => $order->ship_street2,
@@ -415,8 +432,6 @@ class OrderController extends Controller
             'ship_state' => $order->ship_state,
             'ship_zipCode' => $order->ship_zipCode,
             'ship_phone' => $order->ship_phone,
-
-            // Meta
             'comments' => $order->comments,
             'totalpaid' => $order->totalpaid,
             'fromwebsite' => $order->fromwebsite,
@@ -425,8 +440,6 @@ class OrderController extends Controller
             'payment_method' => $order->payment_method,
             'discount' => $order->discount,
             'coupon_code' => $order->coupon_code,
-
-            // Items
             'items' => $order->items->map(function ($item) {
                 return [
                     'item_code' => $item->ItemCode,
