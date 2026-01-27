@@ -11,7 +11,7 @@
             "description": "Local Server"
         },
         {
-            "url": "https://633e9b22b122.ngrok-free.app/",
+            "url": "https://baee374c1509.ngrok-free.app/",
             "description": "Production Server"
         }
     ],
@@ -30,120 +30,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "count": {
-                                            "type": "integer",
-                                            "example": 2
-                                        },
-                                        "orders": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "store_id": {
-                                                        "type": "integer",
-                                                        "example": 10
-                                                    },
-                                                    "clientname": {
-                                                        "type": "string",
-                                                        "example": "John Doe"
-                                                    },
-                                                    "clientemail": {
-                                                        "type": "string",
-                                                        "example": "john@example.com"
-                                                    },
-                                                    "orderid": {
-                                                        "type": "string",
-                                                        "example": "ORD123"
-                                                    },
-                                                    "shippingtypeName": {
-                                                        "type": "string",
-                                                        "example": "Express"
-                                                    },
-                                                    "phone": {
-                                                        "type": "string",
-                                                        "example": "9876543210"
-                                                    },
-                                                    "currency": {
-                                                        "type": "string",
-                                                        "example": "USD"
-                                                    },
-                                                    "bill_name": {
-                                                        "type": "string",
-                                                        "example": "John Doe"
-                                                    },
-                                                    "bill_city": {
-                                                        "type": "string",
-                                                        "example": "New York"
-                                                    },
-                                                    "bill_country": {
-                                                        "type": "string",
-                                                        "example": "USA"
-                                                    },
-                                                    "ship_name": {
-                                                        "type": "string",
-                                                        "example": "John Doe"
-                                                    },
-                                                    "ship_city": {
-                                                        "type": "string",
-                                                        "example": "New York"
-                                                    },
-                                                    "ship_country": {
-                                                        "type": "string",
-                                                        "example": "USA"
-                                                    },
-                                                    "totalpaid": {
-                                                        "type": "number",
-                                                        "format": "float",
-                                                        "example": 150.75
-                                                    },
-                                                    "payment_method": {
-                                                        "type": "string",
-                                                        "example": "credit_card"
-                                                    },
-                                                    "discount": {
-                                                        "type": "number",
-                                                        "format": "float",
-                                                        "example": 10
-                                                    },
-                                                    "coupon_code": {
-                                                        "type": "string",
-                                                        "example": "NEW10"
-                                                    },
-                                                    "items": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "properties": {
-                                                                "item_code": {
-                                                                    "type": "string",
-                                                                    "example": "SKU123"
-                                                                },
-                                                                "quantity": {
-                                                                    "type": "integer",
-                                                                    "example": 2
-                                                                },
-                                                                "price": {
-                                                                    "type": "number",
-                                                                    "format": "float",
-                                                                    "example": 49.99
-                                                                }
-                                                            },
-                                                            "type": "object"
-                                                        }
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/OrdersResponse"
                                 }
                             }
                         }
@@ -152,6 +39,303 @@
                         "description": "Unauthorized"
                     }
                 }
+            }
+        },
+        "/api/orders/{userId}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get orders by user ID",
+                "description": "Returns all orders with items for a specific user",
+                "operationId": "1312bac30463d477d827fb21a263195e",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orders fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrdersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Orders not found"
+                    }
+                }
+            }
+        },
+        "/api/orderprefix/{orderId}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get orders by Order ID",
+                "description": "Returns all orders with items for a specific Order Id",
+                "operationId": "4bdd3d3d060d60386f1cf00584a3f38e",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orders fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrdersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Orders not found"
+                    }
+                }
+            }
+        },
+        "/api/orderid/{id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get orders by ID",
+                "description": "Returns all orders with items for a specific Id",
+                "operationId": "8dfb81646644c2a932ecba5bf626de08",
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orders fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrdersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Orders not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "OrderItem": {
+                "properties": {
+                    "item_code": {
+                        "type": "string",
+                        "example": "SKU123"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 49.99
+                    }
+                },
+                "type": "object"
+            },
+            "Order": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "store_id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "clientname": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "clientemail": {
+                        "type": "string",
+                        "example": "john@example.com"
+                    },
+                    "orderid": {
+                        "type": "string",
+                        "example": "ORD123"
+                    },
+                    "shippingtypeName": {
+                        "type": "string",
+                        "example": "Express"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "9876543210"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "USD"
+                    },
+                    "bill_name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "bill_street": {
+                        "type": "string",
+                        "example": "Street 1"
+                    },
+                    "bill_street2": {
+                        "type": "string",
+                        "example": "Street 2"
+                    },
+                    "bill_city": {
+                        "type": "string",
+                        "example": "New York"
+                    },
+                    "bill_country": {
+                        "type": "string",
+                        "example": "USA"
+                    },
+                    "bill_state": {
+                        "type": "string",
+                        "example": "NY"
+                    },
+                    "bill_zipCode": {
+                        "type": "string",
+                        "example": "10001"
+                    },
+                    "bill_phone": {
+                        "type": "string",
+                        "example": "9876543210"
+                    },
+                    "ship_name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "ship_street": {
+                        "type": "string",
+                        "example": "Street 1"
+                    },
+                    "ship_street2": {
+                        "type": "string",
+                        "example": "Street 2"
+                    },
+                    "ship_city": {
+                        "type": "string",
+                        "example": "New York"
+                    },
+                    "ship_country": {
+                        "type": "string",
+                        "example": "USA"
+                    },
+                    "ship_state": {
+                        "type": "string",
+                        "example": "NY"
+                    },
+                    "ship_zipCode": {
+                        "type": "string",
+                        "example": "10001"
+                    },
+                    "ship_phone": {
+                        "type": "string",
+                        "example": "9876543210"
+                    },
+                    "comments": {
+                        "type": "string",
+                        "example": "Handle with care"
+                    },
+                    "totalpaid": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150.75
+                    },
+                    "fromwebsite": {
+                        "type": "string",
+                        "example": "Shopify"
+                    },
+                    "billingtype": {
+                        "type": "string",
+                        "example": "Prepaid"
+                    },
+                    "transactionid": {
+                        "type": "string",
+                        "example": "TXN12345"
+                    },
+                    "payment_method": {
+                        "type": "string",
+                        "example": "credit_card"
+                    },
+                    "discount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    },
+                    "coupon_code": {
+                        "type": "string",
+                        "example": "NEW10"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderItem"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "OrdersResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Order"
+                        }
+                    }
+                },
+                "type": "object"
             }
         }
     },
