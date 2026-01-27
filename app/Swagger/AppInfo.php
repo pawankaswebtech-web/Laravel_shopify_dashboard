@@ -11,11 +11,7 @@ use OpenApi\Attributes as OA;
 )]
 #[OA\Server(
     url: "/",
-    description: "Local Server"
-)]
-#[OA\Server(
-    url: "https://baee374c1509.ngrok-free.app/",
-    description: "Production Server"
+    description: "Server"
 )]
 class AppInfo
 {
