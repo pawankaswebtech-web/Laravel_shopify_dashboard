@@ -22,8 +22,6 @@ use OpenApi\Annotations as OA;
  *     type="object",
  *     @OA\Property(property="id", type="integer"),
  *     @OA\Property(property="store_id", type="integer"),
- *     @OA\Property(property="storeid", type="integer"),
- *     @OA\Property(property="user_id", type="integer"),
  *     @OA\Property(property="clientname", type="string"),
  *     @OA\Property(property="clientemail", type="string"),
  *     @OA\Property(property="orderid", type="string"),
@@ -209,7 +207,7 @@ class OrderController extends Controller
         $formattedOrderbyid = $orders->map(function ($order) {
             return [
                 'id' => $order->id,
-                'storeid' => $order->user_id,
+                'store_id' => $order->user_id,
                 'clientname' => $order->clientname,
                 'clientemail' => $order->clientemail,
                 'orderid' => $order->orderid,
@@ -323,7 +321,7 @@ class OrderController extends Controller
             'orders' => $orders->map(function ($order) {
                 return [
                     'id' => $order->id,
-                    'storeid' => $order->user_id,
+                    'store_id' => $order->user_id,
                     'clientname' => $order->clientname,
                     'clientemail' => $order->clientemail,
                     'orderid' => $order->orderid,
@@ -409,7 +407,7 @@ class OrderController extends Controller
 
         $formattedOrder = [
             'id' => $order->id,
-            'user_id' => $order->user_id,
+            'store_id' => $order->user_id,
             'clientname' => $order->clientname,
             'clientemail' => $order->clientemail,
             'orderid' => $order->orderid,

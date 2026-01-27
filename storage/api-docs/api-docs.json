@@ -225,12 +225,6 @@
                     "store_id": {
                         "type": "integer"
                     },
-                    "storeid": {
-                        "type": "integer"
-                    },
-                    "user_id": {
-                        "type": "integer"
-                    },
                     "clientname": {
                         "type": "string"
                     },
