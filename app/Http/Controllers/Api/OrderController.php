@@ -110,26 +110,74 @@ use Carbon\Carbon;
  */
 class OrderController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/ordersdetail",
-     *     summary="Get all orders with items",
-     *     description="Returns a list of orders along with their items",
-     *     tags={"Orders"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Orders fetched successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/OrdersResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized"
-     *     )
-     * )
-     */
+/**
+ * @OA\Get(
+ *     path="/api/ordersdetail",
+ *     summary="Get orders with optional status and date filters",
+ *     description="Returns a list of orders along with their items. Filters can be applied using status and date.",
+ *     tags={"Orders"},
+ *
+ *     @OA\Parameter(
+ *         name="status",
+ *         in="query",
+ *         required=false,
+ *         description="Filter orders by fulfillment status",
+ *         @OA\Schema(
+ *             type="string",
+ *             example="fulfilled"
+ *         )
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="date",
+ *         in="query",
+ *         required=false,
+ *         description="Filter orders by created date (YYYY-MM-DD)",
+ *         @OA\Schema(
+ *             type="string",
+ *             format="date",
+ *             example="2024-01-15"
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="Orders fetched successfully",
+ *         @OA\JsonContent(ref="#/components/schemas/OrdersResponse")
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=404,
+ *         description="No orders found"
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized"
+ *     )
+ * )
+ */
+
     public function index(Request $request)
     {
-        $orders = Order::with('items')->get();
+        $status = $request->query('status'); 
+        $date   = $request->query('date');   
+    
+        $orders = Order::with('items')
+            ->when($status, function ($query) use ($status) {
+                $query->where('fulfillment_status', $status);
+            })
+            ->when($date, function ($query) use ($date) {
+                $query->whereDate('created_at', $date);
+            })
+            ->get();
+    
+        if ($orders->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No orders found'
+            ], 404);
+        }
         $formattedOrders = $orders->map(function ($order) {
             return [
                 'id' => $order->id,
