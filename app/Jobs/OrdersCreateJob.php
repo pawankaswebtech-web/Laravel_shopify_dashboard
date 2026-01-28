@@ -174,6 +174,7 @@ class OrdersCreateJob implements ShouldQueue
             'totalpaid' => $shopifyOrder['total_price'] ?? 0,
             'payment_method' => $shopifyOrder['payment_gateway_names'][0] ?? 0,
             'discount' => $shopifyOrder['total_discounts'] ?? 0,
+            'discount' => $shopifyOrder['total_discounts'] ?? 0,
            'date' => \Carbon\Carbon::parse($shopifyOrder['created_at'])->toDateString(),
 
 

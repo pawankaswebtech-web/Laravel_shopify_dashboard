@@ -463,7 +463,7 @@ class OrderController extends Controller
 
         $orders = Order::with('items')
             ->when($status, function ($query) use ($status) {
-                $query->where('order_status', $status);
+                $query->where('fulfillment_status', $status);
             })
             ->get();
 
