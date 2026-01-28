@@ -7,6 +7,8 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use OpenApi\Annotations as OA;
+use Carbon\Carbon;
+
 
 /**
  * @OA\Schema(
@@ -15,6 +17,21 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="item_code", type="string"),
  *     @OA\Property(property="quantity", type="integer"),
  *     @OA\Property(property="price", type="number", format="float")
+ * )
+ * 
+ * @OA\Schema(
+ *     schema="OrderStatus",
+ *     type="object",
+ *    @OA\Property(property="success", type="boolean"),
+ *     @OA\Property(property="status", type="string"),
+ *     @OA\Property(property="count", type="integer")
+ * )
+ * @OA\Schema(
+ *     schema="OrderByDate",
+ *     type="object",
+ *     @OA\Property(property="success", type="boolean"),
+ *      @OA\Property(property="date", type="string"),
+ *      @OA\Property(property="count", type="integer")
  * )
  * 
  * @OA\Schema(
@@ -457,8 +474,45 @@ class OrderController extends Controller
         ]);
     }
 
+     /**
+      * @OA\Get(
+ *     path="/api/ordersdetail/orderstatus",
+ *     summary="Get orders by fulfillment status",
+ *     description="Fetch all orders filtered by fulfillment status (fulfilled, unfulfilled, pending, cancelled)",
+ *     operationId="getOrdersByStatus",
+ *     tags={"Orders"},
+ *
+ *     @OA\Parameter(
+ *         name="status",
+ *         in="query",
+ *         required=true,
+ *         description="Fulfillment status of the order",
+ *         @OA\Schema(
+ *             type="string",
+ *             enum={"fulfilled","unfulfilled","pending","cancelled","partial"},
+ *             example="fulfilled"
+ *         )
+ *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order fetched successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/OrderStatus")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found")
+     *         )
+     *     )
+     * )
+     */
     public function getOrdersByStatus(Request $request)
     {
+        $request->validate([
+            'status' => 'required|in:fulfilled,unfulfilled'
+        ]);
         $status = $request->query('status'); // fulfilled | unfulfilled
 
         $orders = Order::with('items')
@@ -524,5 +578,111 @@ class OrderController extends Controller
             'orders'  => $formattedOrderbystatus,
         ]);
     }
+    /**
+ * @OA\Get(
+ *     path="/api/ordersdetail/orderdate",
+ *     summary="Get orders by created date",
+ *     description="Fetch all orders by matching DATE",
+ *     tags={"Orders"},
+ *
+ *     @OA\Parameter(
+ *         name="date",
+ *         in="query",
+ *         required=true,
+ *         description="Order creation date (YYYY-MM-DD)",
+ *         @OA\Schema(
+ *             type="string",
+ *             format="date",
+ *             example="2024-01-15"
+ *         )
+ *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order fetched successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/OrderByDate")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found")
+     *         )
+     *     )
+     * )
+     */
+    public function getOrdersByDate(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date'
+        ]);
+    
+        $date = Carbon::parse($request->query('date'))->toDateString();
+    
+        $orders = Order::with('items')
+            ->whereDate('created_at', $date)
+            ->get();
+    
+        if ($orders->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No orders found for date: ' . $date
+            ], 404);
+        }
+    
+        $formattedOrders = $orders->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'store_id' => $order->user_id,
+                'clientname' => $order->clientname,
+                'clientemail' => $order->clientemail,
+                'orderid' => $order->orderid,
+                'fulfillment_status' => $order->fulfillment_status,
+                'shippingtypeName' => $order->shippingtypeName,
+                'phone' => $order->phone,
+                'date' => optional($order->created_at)->toDateString(),
+                'currency' => $order->currency,
+                'bill_name' => $order->bill_name,
+                'bill_street' => $order->bill_street,
+                'bill_street2' => $order->bill_street2,
+                'bill_city' => $order->bill_city,
+                'bill_country' => $order->bill_country,
+                'bill_state' => $order->bill_state,
+                'bill_zipCode' => $order->bill_zipCode,
+                'bill_phone' => $order->bill_phone,
+                'ship_name' => $order->ship_name,
+                'ship_street' => $order->ship_street,
+                'ship_street2' => $order->ship_street2,
+                'ship_city' => $order->ship_city,
+                'ship_country' => $order->ship_country,
+                'ship_state' => $order->ship_state,
+                'ship_zipCode' => $order->ship_zipCode,
+                'ship_phone' => $order->ship_phone,
+                'comments' => $order->comments,
+                'totalpaid' => $order->totalpaid,
+                'fromwebsite' => $order->fromwebsite,
+                'billingtype' => $order->billingtype,
+                'transactionid' => $order->transactionid,
+                'payment_method' => $order->payment_method,
+                'discount' => $order->discount,
+                'coupon_code' => $order->coupon_code,
+                'items' => $order->items->map(function ($item) {
+                    return [
+                        'item_code' => $item->ItemCode,
+                        'quantity'  => $item->Quantity,
+                        'price'     => $item->Price,
+                    ];
+                }),
+            ];
+        });
+    
+        return response()->json([
+            'success' => true,
+            'date'    => $date,
+            'count'   => $formattedOrders->count(),
+            'orders'  => $formattedOrders,
+        ]);
+    }
+    
 
 }
