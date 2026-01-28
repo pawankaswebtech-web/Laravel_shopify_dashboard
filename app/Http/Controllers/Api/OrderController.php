@@ -290,7 +290,7 @@ class OrderController extends Controller
      *     )
      * )
      */
-    public function show($userId)
+    public function show(Request $request, $userId)
     {
         $validator = Validator::make($request->all(), [
             'status' => 'nullable|in:fulfilled,unfulfilled',
@@ -421,7 +421,7 @@ class OrderController extends Controller
      *     )
      * )
      */
-    public function showOrderPrefix($orderId)
+    public function showOrderPrefix(Request $request, $orderId)
     {
         $validator = Validator::make($request->all(), [
             'status' => 'nullable|in:fulfilled,unfulfilled',
@@ -572,7 +572,7 @@ class OrderController extends Controller
      *     )
      * )
      */
-    public function showOrderId($Id)
+    public function showOrderId(Request $request, $Id)
     {
         $validator = Validator::make($request->all(), [
             'status' => 'nullable|in:fulfilled,unfulfilled',
