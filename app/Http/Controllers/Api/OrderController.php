@@ -246,6 +246,28 @@ class OrderController extends Controller
      *     summary="Get orders by user ID",
      *     description="Returns all orders with items for a specific user",
      *     tags={"Orders"},
+     * @OA\Parameter(
+ *         name="status",
+ *         in="query",
+ *         required=false,
+ *         description="Filter orders by fulfillment status",
+ *         @OA\Schema(
+ *             type="string",
+ *             example="fulfilled"
+ *         )
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="date",
+ *         in="query",
+ *         required=false,
+ *         description="Filter orders by created date (YYYY-MM-DD)",
+ *         @OA\Schema(
+ *             type="string",
+ *             format="date",
+ *             example="2024-01-15"
+ *         )
+ *     ),
      *     @OA\Parameter(
      *         name="userId",
      *         in="path",
@@ -270,8 +292,26 @@ class OrderController extends Controller
      */
     public function show($userId)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'nullable|in:fulfilled,unfulfilled',
+            'date'   => 'nullable|date_format:Y-m-d',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+        $status = $request->query('status'); 
+        $date   = $request->query('date');   
         $orders = Order::with('items')
             ->where('user_id', $userId)
+            ->when($status, function ($query) use ($status) {
+                $query->where('fulfillment_status', $status);
+            })
+            ->when($date, function ($query) use ($date) {
+                $query->whereDate('created_at', $date);
+            })
             ->get();
 
         if ($orders->isEmpty()) {
@@ -338,6 +378,27 @@ class OrderController extends Controller
      *     summary="Get orders by Order ID prefix",
      *     description="Returns all orders matching the order ID prefix",
      *     tags={"Orders"},
+     * @OA\Parameter(
+ *         name="status",
+ *         in="query",
+ *         required=false,
+ *         description="Filter orders by fulfillment status",
+ *         @OA\Schema(
+ *             type="string",
+ *             example="fulfilled"
+ *         )
+ *     ),
+ *     @OA\Parameter(
+ *         name="date",
+ *         in="query",
+ *         required=false,
+ *         description="Filter orders by created date (YYYY-MM-DD)",
+ *         @OA\Schema(
+ *             type="string",
+ *             format="date",
+ *             example="2024-01-15"
+ *         )
+ *     ),
      *     @OA\Parameter(
      *         name="orderId",
      *         in="path",
@@ -362,6 +423,19 @@ class OrderController extends Controller
      */
     public function showOrderPrefix($orderId)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'nullable|in:fulfilled,unfulfilled',
+            'date'   => 'nullable|date_format:Y-m-d',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+        $status = $request->query('status'); 
+        $date   = $request->query('date');  
+
         $orderId = urldecode($orderId);
         $orderId = ltrim($orderId, '#');
 
@@ -383,6 +457,12 @@ class OrderController extends Controller
         // Fetch orders
         $orders = Order::with('items')
             ->where('orderid', 'LIKE', $finalPrefix . '%')
+            ->when($status, function ($query) use ($status) {
+                $query->where('fulfillment_status', $status);
+            })
+            ->when($date, function ($query) use ($date) {
+                $query->whereDate('created_at', $date);
+            })
             ->get();
 
         if ($orders->isEmpty()) {
@@ -449,6 +529,27 @@ class OrderController extends Controller
      *     summary="Get order by ID",
      *     description="Returns a single order with items for a specific ID",
      *     tags={"Orders"},
+     *  * @OA\Parameter(
+ *         name="status",
+ *         in="query",
+ *         required=false,
+ *         description="Filter orders by fulfillment status",
+ *         @OA\Schema(
+ *             type="string",
+ *             example="fulfilled"
+ *         )
+ *     ),
+ *     @OA\Parameter(
+ *         name="date",
+ *         in="query",
+ *         required=false,
+ *         description="Filter orders by created date (YYYY-MM-DD)",
+ *         @OA\Schema(
+ *             type="string",
+ *             format="date",
+ *             example="2024-01-15"
+ *         )
+ *     ),
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -473,8 +574,27 @@ class OrderController extends Controller
      */
     public function showOrderId($Id)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'nullable|in:fulfilled,unfulfilled',
+            'date'   => 'nullable|date_format:Y-m-d',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+        $status = $request->query('status'); 
+        $date   = $request->query('date');  
+
         $order = Order::with('items')
             ->where('id', $Id)
+            ->when($status, function ($query) use ($status) {
+                $query->where('fulfillment_status', $status);
+            })
+            ->when($date, function ($query) use ($date) {
+                $query->whereDate('created_at', $date);
+            })
             ->first();
 
         if (!$order) {

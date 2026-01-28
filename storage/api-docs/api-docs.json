@@ -73,6 +73,27 @@
                 "operationId": "5ac83c8cd74c6852f4526ac12d1eb71a",
                 "parameters": [
                     {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter orders by fulfillment status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "fulfilled"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Filter orders by created date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-15"
+                        }
+                    },
+                    {
                         "name": "userId",
                         "in": "path",
                         "description": "User ID",
@@ -127,6 +148,27 @@
                 "operationId": "68ce30fe23f64c71cc9a6b2e2167cc3a",
                 "parameters": [
                     {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter orders by fulfillment status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "fulfilled"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Filter orders by created date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-15"
+                        }
+                    },
+                    {
                         "name": "orderId",
                         "in": "path",
                         "description": "Order ID or prefix (e.g., ORD123, #ORD1234567)",
@@ -180,6 +222,27 @@
                 "description": "Returns a single order with items for a specific ID",
                 "operationId": "994937d3c785f3887489a3c44bbfaca4",
                 "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter orders by fulfillment status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "fulfilled"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Filter orders by created date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-15"
+                        }
+                    },
                     {
                         "name": "id",
                         "in": "path",
