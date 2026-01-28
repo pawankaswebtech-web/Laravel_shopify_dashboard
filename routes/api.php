@@ -26,6 +26,7 @@ Route::prefix('ordersdetail')->name('api.orders.')->group(function () {
     Route::get('storeid/{userId}', [OrderController::class, 'show'])->name('show');
     Route::get('/orderprefix/{orderId}', [OrderController::class, 'showOrderPrefix'])->name('showOrderPrefix');
     Route::get('/orderid/{Id}', [OrderController::class, 'showOrderId'])->name('showOrderId');
+    Route::get('/orderstatus', [OrderController::class, 'getOrdersByStatus'])->name('getOrdersByStatus');
 });
 
 

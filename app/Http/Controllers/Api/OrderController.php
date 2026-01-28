@@ -122,6 +122,7 @@ class OrderController extends Controller
                 'orderid' => $order->orderid,
                 'shippingtypeName' => $order->shippingtypeName,
                 'phone' => $order->phone,
+                'date' => $order->created_at->toDateString(),
                 'currency' => $order->currency,
                 'bill_name' => $order->bill_name,
                 'bill_street' => $order->bill_street,
@@ -213,6 +214,7 @@ class OrderController extends Controller
                 'orderid' => $order->orderid,
                 'shippingtypeName' => $order->shippingtypeName,
                 'phone' => $order->phone,
+                'date' => $order->created_at->toDateString(),
                 'currency' => $order->currency,
                 'bill_name' => $order->bill_name,
                 'bill_street' => $order->bill_street,
@@ -327,6 +329,7 @@ class OrderController extends Controller
                     'orderid' => $order->orderid,
                     'shippingtypeName' => $order->shippingtypeName,
                     'phone' => $order->phone,
+                    'date' => $order->created_at->toDateString(),
                     'currency' => $order->currency,
                     'bill_name' => $order->bill_name,
                     'bill_street' => $order->bill_street,
@@ -413,6 +416,7 @@ class OrderController extends Controller
             'orderid' => $order->orderid,
             'shippingtypeName' => $order->shippingtypeName,
             'phone' => $order->phone,
+            'date' => $order->created_at->toDateString(),
             'currency' => $order->currency,
             'bill_name' => $order->bill_name,
             'bill_street' => $order->bill_street,
@@ -452,4 +456,73 @@ class OrderController extends Controller
             'order'   => $formattedOrder,
         ]);
     }
+
+    public function getOrdersByStatus(Request $request)
+    {
+        $status = $request->query('status'); // fulfilled | unfulfilled
+
+        $orders = Order::with('items')
+            ->when($status, function ($query) use ($status) {
+                $query->where('order_status', $status);
+            })
+            ->get();
+
+        if ($orders->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No orders found'
+            ], 404);
+        }
+
+        $formattedOrderbystatus = $orders->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'store_id' => $order->user_id,
+                'clientname' => $order->clientname,
+                'clientemail' => $order->clientemail,
+                'orderid' => $order->orderid,
+                'shippingtypeName' => $order->shippingtypeName,
+                'phone' => $order->phone,
+                'date' => $order->created_at->toDateString(),
+                'currency' => $order->currency,
+                'bill_name' => $order->bill_name,
+                'bill_street' => $order->bill_street,
+                'bill_street2' => $order->bill_street2,
+                'bill_city' => $order->bill_city,
+                'bill_country' => $order->bill_country,
+                'bill_state' => $order->bill_state,
+                'bill_zipCode' => $order->bill_zipCode,
+                'bill_phone' => $order->bill_phone,
+                'ship_name' => $order->ship_name,
+                'ship_street' => $order->ship_street,
+                'ship_street2' => $order->ship_street2,
+                'ship_city' => $order->ship_city,
+                'ship_country' => $order->ship_country,
+                'ship_state' => $order->ship_state,
+                'ship_zipCode' => $order->ship_zipCode,
+                'ship_phone' => $order->ship_phone,
+                'comments' => $order->comments,
+                'totalpaid' => $order->totalpaid,
+                'fromwebsite' => $order->fromwebsite,
+                'billingtype' => $order->billingtype,
+                'transactionid' => $order->transactionid,
+                'payment_method' => $order->payment_method,
+                'discount' => $order->discount,
+                'coupon_code' => $order->coupon_code,
+                'items' => $order->items->map(function ($item) {
+                    return [
+                        'item_code' => $item->ItemCode,
+                        'quantity' => $item->Quantity,
+                        'price' => $item->Price,
+                    ];
+                }),
+            ];
+        });
+        return response()->json([
+            'success' => true,
+            'count'   => $formattedOrderbystatus->count(),
+            'orders'  => $formattedOrderbystatus,
+        ]);
+    }
+
 }
