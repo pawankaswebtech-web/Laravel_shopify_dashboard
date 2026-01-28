@@ -160,6 +160,16 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'nullable|in:fulfilled,unfulfilled',
+            'date'   => 'nullable|date_format:Y-m-d',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors()
+            ], 422);
+        }
         $status = $request->query('status'); 
         $date   = $request->query('date');   
     
