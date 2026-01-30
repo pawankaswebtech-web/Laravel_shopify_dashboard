@@ -238,6 +238,7 @@ class OrderController extends Controller
                 'billingtype' => $order->billingtype,
                 'transactionid' => $order->transactionid,
                 'payment_method' => $order->payment_method,
+                'order_status' => $order->order_status,
                 'discount' => $order->discount,
                 'coupon_code' => $order->coupon_code,
                 'items' => $order->items->map(function ($item) {
