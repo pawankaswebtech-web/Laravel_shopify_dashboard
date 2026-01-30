@@ -114,31 +114,44 @@ class OrderController extends Controller
 /**
  * @OA\Get(
  *     path="/api/ordersdetail",
- *     summary="Get orders with optional status and date filters",
- *     description="Returns a list of orders along with their items. Filters can be applied using status and date.",
+ *     summary="Get orders with filters",
+ *     description="Filter orders by user, order status, and date range",
  *     tags={"Orders"},
  *
  *     @OA\Parameter(
- *         name="status",
+ *         name="StoreID",
  *         in="query",
  *         required=false,
- *         description="Filter orders by fulfillment status",
+ *         description="Filter orders by user ID",
+ *         @OA\Schema(type="integer", example=15)
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="Order Status",
+ *         in="query",
+ *         required=false,
+ *         description="Order status",
  *         @OA\Schema(
  *             type="string",
- *             example="fulfilled"
+ *             enum={"pending","paid"},
+ *             example="paid"
  *         )
  *     ),
  *
  *     @OA\Parameter(
- *         name="date",
+ *         name="start Date",
  *         in="query",
  *         required=false,
- *         description="Filter orders by created date (YYYY-MM-DD)",
- *         @OA\Schema(
- *             type="string",
- *             format="date",
- *             example="2024-01-15"
- *         )
+ *         description="Start date (YYYY-MM-DD)",
+ *         @OA\Schema(type="string", format="date", example="2024-01-01")
+ *     ),
+ *
+ *     @OA\Parameter(
+ *         name="End Date",
+ *         in="query",
+ *         required=false,
+ *         description="End date (YYYY-MM-DD)",
+ *         @OA\Schema(type="string", format="date", example="2024-01-31")
  *     ),
  *
  *     @OA\Response(
@@ -147,43 +160,46 @@ class OrderController extends Controller
  *         @OA\JsonContent(ref="#/components/schemas/OrdersResponse")
  *     ),
  *
- *     @OA\Response(
- *         response=404,
- *         description="No orders found"
- *     ),
- *
- *     @OA\Response(
- *         response=401,
- *         description="Unauthorized"
- *     )
+ *     @OA\Response(response=422, description="Validation error"),
+ *     @OA\Response(response=401, description="Unauthorized")
  * )
  */
+
 
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'nullable|in:fulfilled,unfulfilled',
-            'date'   => 'nullable|date_format:Y-m-d',
+            'user_id'      => 'nullable|integer',
+            'order_status' => 'nullable|in:pending,paid',
+            'start_date'   => 'nullable|date_format:Y-m-d',
+            'end_date'     => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
         ]);
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors'  => $validator->errors()
             ], 422);
-        }
-        $status = $request->query('status'); 
-        $date   = $request->query('date');   
-    
+        }  
         $orders = Order::with('items')
-            ->when($status, function ($query) use ($status) {
-                $query->where('fulfillment_status', $status);
-            })
-            ->when($date, function ($query) use ($date) {
-                $query->whereDate('created_at', $date);
-            })
-            ->get();
+        ->when($request->user_id, function ($q) use ($request) {
+            $q->where('user_id', $request->user_id);
+        })
+        ->when($request->order_status, function ($q) use ($request) {
+            $q->where('order_status', $request->order_status);
+        })
+        ->when(
+            $request->start_date && $request->end_date,
+            function ($q) use ($request) {
+                $q->whereBetween('created_at', [
+                    $request->start_date . ' 00:00:00',
+                    $request->end_date . ' 23:59:59',
+                ]);
+            }
+        )
+        ->get();
+
     
-        if ($orders->isEmpty()) {
+        if ($orders->isEmpty()) { 
             return response()->json([
                 'success' => false,
                 'message' => 'No orders found'

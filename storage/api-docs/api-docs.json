@@ -17,29 +17,54 @@
                 "tags": [
                     "Orders"
                 ],
-                "summary": "Get orders with optional status and date filters",
-                "description": "Returns a list of orders along with their items. Filters can be applied using status and date.",
+                "summary": "Get orders with filters",
+                "description": "Filter orders by user, order status, and date range",
                 "operationId": "69b5b31b9ea7435df87c4c0a295beaac",
                 "parameters": [
                     {
-                        "name": "status",
+                        "name": "StoreID",
                         "in": "query",
-                        "description": "Filter orders by fulfillment status",
+                        "description": "Filter orders by user ID",
                         "required": false,
                         "schema": {
-                            "type": "string",
-                            "example": "fulfilled"
+                            "type": "integer",
+                            "example": 15
                         }
                     },
                     {
-                        "name": "date",
+                        "name": "Order Status",
                         "in": "query",
-                        "description": "Filter orders by created date (YYYY-MM-DD)",
+                        "description": "Order status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "paid"
+                            ],
+                            "example": "paid"
+                        }
+                    },
+                    {
+                        "name": "start Date",
+                        "in": "query",
+                        "description": "Start date (YYYY-MM-DD)",
                         "required": false,
                         "schema": {
                             "type": "string",
                             "format": "date",
-                            "example": "2024-01-15"
+                            "example": "2024-01-01"
+                        }
+                    },
+                    {
+                        "name": "End Date",
+                        "in": "query",
+                        "description": "End date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-31"
                         }
                     }
                 ],
@@ -54,8 +79,8 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "No orders found"
+                    "422": {
+                        "description": "Validation error"
                     },
                     "401": {
                         "description": "Unauthorized"
