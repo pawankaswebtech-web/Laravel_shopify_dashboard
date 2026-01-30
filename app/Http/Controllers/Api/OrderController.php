@@ -127,7 +127,7 @@ class OrderController extends Controller
  *     ),
  *
  *     @OA\Parameter(
- *         name="Order Status",
+ *         name="order_status",
  *         in="query",
  *         required=false,
  *         description="order_status",
