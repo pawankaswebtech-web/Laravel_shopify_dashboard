@@ -22,7 +22,7 @@
                 "operationId": "69b5b31b9ea7435df87c4c0a295beaac",
                 "parameters": [
                     {
-                        "name": "StoreID",
+                        "name": "storeid",
                         "in": "query",
                         "description": "Filter orders by user ID",
                         "required": false,
@@ -32,9 +32,9 @@
                         }
                     },
                     {
-                        "name": "Order Status",
+                        "name": "order_status",
                         "in": "query",
-                        "description": "Order status",
+                        "description": "order_status",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -46,7 +46,7 @@
                         }
                     },
                     {
-                        "name": "start Date",
+                        "name": "start_date",
                         "in": "query",
                         "description": "Start date (YYYY-MM-DD)",
                         "required": false,
@@ -57,7 +57,7 @@
                         }
                     },
                     {
-                        "name": "End Date",
+                        "name": "end_date",
                         "in": "query",
                         "description": "End date (YYYY-MM-DD)",
                         "required": false,
