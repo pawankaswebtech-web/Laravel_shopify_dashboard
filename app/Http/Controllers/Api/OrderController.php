@@ -119,7 +119,7 @@ class OrderController extends Controller
  *     tags={"Orders"},
  *
  *     @OA\Parameter(
- *         name="StoreID",
+ *         name="storeid",
  *         in="query",
  *         required=false,
  *         description="Filter orders by user ID",
@@ -130,7 +130,7 @@ class OrderController extends Controller
  *         name="Order Status",
  *         in="query",
  *         required=false,
- *         description="Order status",
+ *         description="order_status",
  *         @OA\Schema(
  *             type="string",
  *             enum={"pending","paid"},
@@ -139,7 +139,7 @@ class OrderController extends Controller
  *     ),
  *
  *     @OA\Parameter(
- *         name="start Date",
+ *         name="start_date",
  *         in="query",
  *         required=false,
  *         description="Start date (YYYY-MM-DD)",
@@ -147,7 +147,7 @@ class OrderController extends Controller
  *     ),
  *
  *     @OA\Parameter(
- *         name="End Date",
+ *         name="end_date",
  *         in="query",
  *         required=false,
  *         description="End date (YYYY-MM-DD)",
