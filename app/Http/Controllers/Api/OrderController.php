@@ -181,8 +181,8 @@ class OrderController extends Controller
             ], 422);
         }  
         $orders = Order::with('items')
-        ->when($request->user_id, function ($q) use ($request) {
-            $q->where('user_id', $request->user_id);
+        ->when($request->storeid, function ($q) use ($request) {
+            $q->where('user_id', $request->storeid);
         })
         ->when($request->order_status, function ($q) use ($request) {
             $q->where('order_status', $request->order_status);
