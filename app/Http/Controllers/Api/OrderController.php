@@ -112,92 +112,72 @@ use Carbon\Carbon;
 class OrderController extends Controller
 {
 /**
- * @OA\Get(
+ * @OA\Post(
  *     path="/api/ordersdetail",
  *     summary="Get orders with filters",
- *     description="Filter orders by user, order status, and date range",
+ *     description="Filter orders by store, order status, and date range (JSON body)",
  *     tags={"Orders"},
  *
- *     @OA\Parameter(
- *         name="storeid",
- *         in="query",
+ *     @OA\RequestBody(
  *         required=false,
- *         description="Filter orders by user ID",
- *         @OA\Schema(type="integer", example=15)
- *     ),
- *
- *     @OA\Parameter(
- *         name="order_status",
- *         in="query",
- *         required=false,
- *         description="order_status",
- *         @OA\Schema(
- *             type="string",
- *             enum={"pending","paid"},
- *             example="paid"
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="storeid", type="integer", example=15),
+ *             @OA\Property(
+ *                 property="order_status",
+ *                 type="string",
+ *                 enum={"pending","paid"},
+ *                 example="paid"
+ *             ),
+ *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
+ *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
  *         )
- *     ),
- *
- *     @OA\Parameter(
- *         name="start_date",
- *         in="query",
- *         required=false,
- *         description="Start date (YYYY-MM-DD)",
- *         @OA\Schema(type="string", format="date", example="2024-01-01")
- *     ),
- *
- *     @OA\Parameter(
- *         name="end_date",
- *         in="query",
- *         required=false,
- *         description="End date (YYYY-MM-DD)",
- *         @OA\Schema(type="string", format="date", example="2024-01-31")
  *     ),
  *
  *     @OA\Response(
  *         response=200,
- *         description="Orders fetched successfully",
- *         @OA\JsonContent(ref="#/components/schemas/OrdersResponse")
+ *         description="Orders fetched successfully"
  *     ),
- *
  *     @OA\Response(response=422, description="Validation error"),
  *     @OA\Response(response=401, description="Unauthorized")
  * )
  */
 
 
+
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id'      => 'nullable|integer',
+            'storeid'      => 'nullable|integer',
             'order_status' => 'nullable|in:pending,paid',
             'start_date'   => 'nullable|date_format:Y-m-d',
             'end_date'     => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
         ]);
+    
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors'  => $validator->errors()
             ], 422);
-        }  
+        }
+    
         $orders = Order::with('items')
-        ->when($request->storeid, function ($q) use ($request) {
-            $q->where('user_id', $request->storeid);
-        })
-        ->when($request->order_status, function ($q) use ($request) {
-            $q->where('order_status', $request->order_status);
-        })
-        ->when(
-            $request->start_date && $request->end_date,
-            function ($q) use ($request) {
-                $q->whereBetween('created_at', [
-                    $request->start_date . ' 00:00:00',
-                    $request->end_date . ' 23:59:59',
-                ]);
-            }
-        )
-        ->get();
-
+            ->when($request->storeid, function ($q) use ($request) {
+                $q->where('user_id', $request->storeid);
+            })
+            ->when($request->order_status, function ($q) use ($request) {
+                $q->where('order_status', $request->order_status);
+            })
+            ->when(
+                $request->start_date && $request->end_date,
+                function ($q) use ($request) {
+                    $q->whereBetween('created_at', [
+                        $request->start_date . ' 00:00:00',
+                        $request->end_date . ' 23:59:59',
+                    ]);
+                }
+            )
+            ->get();
     
         if ($orders->isEmpty()) { 
             return response()->json([

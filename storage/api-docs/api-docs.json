@@ -13,71 +13,50 @@
     ],
     "paths": {
         "/api/ordersdetail": {
-            "get": {
+            "post": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Get orders with filters",
-                "description": "Filter orders by user, order status, and date range",
-                "operationId": "69b5b31b9ea7435df87c4c0a295beaac",
-                "parameters": [
-                    {
-                        "name": "storeid",
-                        "in": "query",
-                        "description": "Filter orders by user ID",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "example": 15
-                        }
-                    },
-                    {
-                        "name": "order_status",
-                        "in": "query",
-                        "description": "order_status",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "pending",
-                                "paid"
-                            ],
-                            "example": "paid"
-                        }
-                    },
-                    {
-                        "name": "start_date",
-                        "in": "query",
-                        "description": "Start date (YYYY-MM-DD)",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "format": "date",
-                            "example": "2024-01-01"
-                        }
-                    },
-                    {
-                        "name": "end_date",
-                        "in": "query",
-                        "description": "End date (YYYY-MM-DD)",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "format": "date",
-                            "example": "2024-01-31"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Orders fetched successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OrdersResponse"
-                                }
+                "description": "Filter orders by store, order status, and date range (JSON body)",
+                "operationId": "a6b919e29989950afe39bdb6a07e564f",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "storeid": {
+                                        "type": "integer",
+                                        "example": 15
+                                    },
+                                    "order_status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pending",
+                                            "paid"
+                                        ],
+                                        "example": "paid"
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-31"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Orders fetched successfully"
                     },
                     "422": {
                         "description": "Validation error"
