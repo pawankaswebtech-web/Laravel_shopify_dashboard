@@ -633,7 +633,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @OA\Get(
+     * @OA\POST(
      *     path="/api/ordersdetail/orderstatus",
      *     summary="Get orders by fulfillment status",
      *     description="Fetch all orders filtered by fulfillment status",
@@ -646,10 +646,19 @@ class OrderController extends Controller
      *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
      *         )
      *     ),
-     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrderStatus")),
-     *     @OA\Response(response=404, description="Orders not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
-     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
-     * )
+ *     @OA\Response(
+ *         response=200,
+ *         description="Orders fetched successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Orders not found"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error"
+ *     )
+ * )
      */
     public function getOrdersByStatus(Request $request)
     {
@@ -661,7 +670,7 @@ class OrderController extends Controller
 
         $orders = Order::with('items')
             ->when($status, function ($query) use ($status) {
-                $query->where('fulfillment_status', $status);
+                $query->where('order_status', $status);
             })
             ->get();
 
@@ -725,7 +734,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @OA\Get(
+     * @OA\POST(
      *     path="/api/ordersdetail/orderdate",
      *     summary="Get orders by created date",
      *     description="Fetch all orders by matching DATE",
@@ -738,10 +747,19 @@ class OrderController extends Controller
      *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
      *         )
      *     ),
-     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrderByDate")),
-     *     @OA\Response(response=404, description="Orders not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
-     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
-     * )
+ *     @OA\Response(
+ *         response=200,
+ *         description="Orders fetched successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Orders not found"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error"
+ *     )
+ * )
      */
     public function getOrdersByDate(Request $request)
     {
