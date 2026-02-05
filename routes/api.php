@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Webhook for internal system updates (Unauthenticated)
 // Route::post('/webhook/order-update', [OrdersController::class, 'webhookUpdateStatus'])->name('api.webhook.order.update');
 Route::prefix('ordersdetail')->name('api.orders.')->group(function () {
-    Route::get('/', [OrderController::class, 'index'])->name('index');
+    Route::post('/', [OrderController::class, 'index'])->name('index');
     Route::get('storeid/{userId}', [OrderController::class, 'show'])->name('show');
     Route::get('/orderprefix/{orderId}', [OrderController::class, 'showOrderPrefix'])->name('showOrderPrefix');
     Route::get('/orderid/{Id}', [OrderController::class, 'showOrderId'])->name('showOrderId');
