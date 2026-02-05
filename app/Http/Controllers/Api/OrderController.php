@@ -355,32 +355,54 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/ordersdetail/orderprefix/{orderId}",
-     *     summary="Get orders by Order ID prefix",
-     *     description="Returns all orders matching the order ID prefix",
-     *     tags={"Orders"},
-     *     @OA\RequestBody(
-     *         required=false,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="storeid", type="integer", example=15),
-     *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
-     *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
-     *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrderPrefixResponse")),
-     *     @OA\Response(response=404, description="Orders not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
-     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
-     * )
-     */
+
+   /**
+ * @OA\Post(
+ *     path="/api/ordersdetail/orderprefix/{orderId}",
+ *     summary="Get orders by Order ID prefix",
+ *     description="Returns all orders matching the order ID prefix",
+ *     tags={"Orders"},
+ *
+ *     @OA\Parameter(
+ *         name="orderId",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="string", example="ABC123")
+ *     ),
+ *
+ *     @OA\RequestBody(
+ *         required=false,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="storeid", type="integer", example=15),
+ *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
+ *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
+ *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="Orders fetched successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Orders not found"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error"
+ *     )
+ * )
+ */
+
     public function showOrderPrefix(Request $request, $orderId)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'nullable|in:fulfilled,unfulfilled',
-            'date'   => 'nullable|date_format:Y-m-d',
+            'storeid'      => 'nullable|integer',
+            'order_status' => 'nullable|in:pending,paid',
+            'start_date'   => 'nullable|date_format:Y-m-d',
+            'end_date'     => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
         ]);
         
         if ($validator->fails()) {
@@ -408,11 +430,17 @@ class OrderController extends Controller
 
         $orders = Order::with('items')
             ->where('orderid', 'LIKE', $finalPrefix . '%')
-            ->when($status, function ($query) use ($status) {
-                $query->where('fulfillment_status', $status);
+            ->when($request->storeid, function ($q) use ($request) {
+                $q->where('user_id', $request->storeid);
             })
-            ->when($date, function ($query) use ($date) {
-                $query->whereDate('created_at', $date);
+            ->when($request->order_status, function ($q) use ($request) {
+                $q->where('order_status', $request->order_status);
+            })
+            ->when($request->start_date && $request->end_date, function ($q) use ($request) {
+                $q->whereBetween('created_at', [
+                    $request->start_date . ' 00:00:00',
+                    $request->end_date . ' 23:59:59',
+                ]);
             })
             ->get();
 
@@ -474,34 +502,54 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/ordersdetail/orderid/{id}",
-     *     summary="Get order by ID",
-     *     description="Returns a single order with items for a specific ID",
-     *     tags={"Orders"},
-     *     @OA\RequestBody(
-     *         required=false,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="storeid", type="integer", example=15),
-     *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
-     *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
-     *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Order fetched successfully", @OA\JsonContent(ref="#/components/schemas/SingleOrderResponse")),
-     *     @OA\Response(response=404, description="Order not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
-     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
-     * )
-     */
+  /**
+ * @OA\Post(
+ *     path="/api/ordersdetail/orderid/{id}",
+ *     summary="Get order by ID",
+ *     description="Returns a single order with items for a specific ID",
+ *     tags={"Orders"},
+ *
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer", example=15)
+ *     ),
+ *
+ *     @OA\RequestBody(
+ *         required=false,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="storeid", type="integer", example=15),
+ *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
+ *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
+ *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="Orders fetched successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Orders not found"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error"
+ *     )
+ * )
+ */
+
     public function showOrderId(Request $request, $Id)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'nullable|in:fulfilled,unfulfilled',
-            'date'   => 'nullable|date_format:Y-m-d',
+            'storeid'      => 'nullable|integer',
+            'order_status' => 'nullable|in:pending,paid',
+            'start_date'   => 'nullable|date_format:Y-m-d',
+            'end_date'     => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
         ]);
-        
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -514,11 +562,17 @@ class OrderController extends Controller
 
         $order = Order::with('items')
             ->where('id', $Id)
-            ->when($status, function ($query) use ($status) {
-                $query->where('fulfillment_status', $status);
+            ->when($request->storeid, function ($q) use ($request) {
+                $q->where('user_id', $request->storeid);
             })
-            ->when($date, function ($query) use ($date) {
-                $query->whereDate('created_at', $date);
+            ->when($request->order_status, function ($q) use ($request) {
+                $q->where('order_status', $request->order_status);
+            })
+            ->when($request->start_date && $request->end_date, function ($q) use ($request) {
+                $q->whereBetween('created_at', [
+                    $request->start_date . ' 00:00:00',
+                    $request->end_date . ' 23:59:59',
+                ]);
             })
             ->first();
 

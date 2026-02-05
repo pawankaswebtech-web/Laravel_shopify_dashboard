@@ -151,13 +151,24 @@
             }
         },
         "/api/ordersdetail/orderprefix/{orderId}": {
-            "get": {
+            "post": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Get orders by Order ID prefix",
                 "description": "Returns all orders matching the order ID prefix",
-                "operationId": "68ce30fe23f64c71cc9a6b2e2167cc3a",
+                "operationId": "5cfca91e00d2a612fbe02b6ab1b49892",
+                "parameters": [
+                    {
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "ABC123"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": false,
                     "content": {
@@ -194,46 +205,36 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Orders fetched successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OrderPrefixResponse"
-                                }
-                            }
-                        }
+                        "description": "Orders fetched successfully"
                     },
                     "404": {
-                        "description": "Orders not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
+                        "description": "Orders not found"
                     },
                     "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationErrorResponse"
-                                }
-                            }
-                        }
+                        "description": "Validation error"
                     }
                 }
             }
         },
         "/api/ordersdetail/orderid/{id}": {
-            "get": {
+            "post": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Get order by ID",
                 "description": "Returns a single order with items for a specific ID",
-                "operationId": "994937d3c785f3887489a3c44bbfaca4",
+                "operationId": "4971bc74f77c710fb6dac9c72e05b957",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 15
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": false,
                     "content": {
@@ -270,34 +271,13 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Order fetched successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SingleOrderResponse"
-                                }
-                            }
-                        }
+                        "description": "Orders fetched successfully"
                     },
                     "404": {
-                        "description": "Order not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
+                        "description": "Orders not found"
                     },
                     "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationErrorResponse"
-                                }
-                            }
-                        }
+                        "description": "Validation error"
                     }
                 }
             }
