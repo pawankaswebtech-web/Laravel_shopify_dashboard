@@ -10,141 +10,134 @@ use Illuminate\Support\Facades\Validator;
 use OpenApi\Annotations as OA;
 use Carbon\Carbon;
 
-
 /**
  * @OA\Schema(
  *     schema="OrderItem",
  *     type="object",
- *     @OA\Property(property="item_code", type="string"),
- *     @OA\Property(property="quantity", type="integer"),
- *     @OA\Property(property="price", type="number", format="float")
- * )
- * 
- * @OA\Schema(
- *     schema="OrderStatus",
- *     type="object",
- *    @OA\Property(property="success", type="boolean"),
- *     @OA\Property(property="status", type="string"),
- *     @OA\Property(property="count", type="integer")
- * )
- * @OA\Schema(
- *     schema="OrderByDate",
- *     type="object",
- *     @OA\Property(property="success", type="boolean"),
- *      @OA\Property(property="date", type="string"),
- *      @OA\Property(property="count", type="integer")
+ *     @OA\Property(property="item_code", type="string", example="RNG001"),
+ *     @OA\Property(property="quantity", type="integer", example=1),
+ *     @OA\Property(property="price", type="number", format="float", example=1500.50)
  * )
  * 
  * @OA\Schema(
  *     schema="Order",
  *     type="object",
- *     @OA\Property(property="id", type="integer"),
- *     @OA\Property(property="store_id", type="integer"),
- *     @OA\Property(property="clientname", type="string"),
- *     @OA\Property(property="clientemail", type="string"),
- *     @OA\Property(property="orderid", type="string"),
- *     @OA\Property(property="shippingtypeName", type="string"),
- *     @OA\Property(property="phone", type="string"),
- *     @OA\Property(property="currency", type="string"),
- *     @OA\Property(property="bill_name", type="string"),
- *     @OA\Property(property="bill_street", type="string"),
- *     @OA\Property(property="bill_street2", type="string"),
- *     @OA\Property(property="bill_city", type="string"),
- *     @OA\Property(property="bill_country", type="string"),
- *     @OA\Property(property="bill_state", type="string"),
- *     @OA\Property(property="bill_zipCode", type="string"),
- *     @OA\Property(property="bill_phone", type="string"),
- *     @OA\Property(property="ship_name", type="string"),
- *     @OA\Property(property="ship_street", type="string"),
- *     @OA\Property(property="ship_street2", type="string"),
- *     @OA\Property(property="ship_city", type="string"),
- *     @OA\Property(property="ship_country", type="string"),
- *     @OA\Property(property="ship_state", type="string"),
- *     @OA\Property(property="ship_zipCode", type="string"),
- *     @OA\Property(property="ship_phone", type="string"),
- *     @OA\Property(property="comments", type="string"),
- *     @OA\Property(property="totalpaid", type="number", format="float"),
- *     @OA\Property(property="fromwebsite", type="string"),
- *     @OA\Property(property="billingtype", type="string"),
- *     @OA\Property(property="transactionid", type="string"),
- *     @OA\Property(property="payment_method", type="string"),
- *     @OA\Property(property="discount", type="number", format="float"),
- *     @OA\Property(property="coupon_code", type="string"),
- *     @OA\Property(
- *         property="items",
- *         type="array",
- *         @OA\Items(ref="#/components/schemas/OrderItem")
- *     )
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="store_id", type="integer", example=10),
+ *     @OA\Property(property="clientname", type="string", example="John Doe"),
+ *     @OA\Property(property="clientemail", type="string", example="john@example.com"),
+ *     @OA\Property(property="orderid", type="string", example="ORD123"),
+ *     @OA\Property(property="shippingtypeName", type="string", example="Express"),
+ *     @OA\Property(property="phone", type="string", example="9876543210"),
+ *     @OA\Property(property="date", type="string", format="date", example="2024-01-15"),
+ *     @OA\Property(property="currency", type="string", example="USD"),
+ *     @OA\Property(property="bill_name", type="string", example="John Doe"),
+ *     @OA\Property(property="bill_street", type="string", example="123 Main St"),
+ *     @OA\Property(property="bill_street2", type="string", example="Apt 4B"),
+ *     @OA\Property(property="bill_city", type="string", example="New York"),
+ *     @OA\Property(property="bill_country", type="string", example="USA"),
+ *     @OA\Property(property="bill_state", type="string", example="NY"),
+ *     @OA\Property(property="bill_zipCode", type="string", example="10001"),
+ *     @OA\Property(property="bill_phone", type="string", example="9876543210"),
+ *     @OA\Property(property="ship_name", type="string", example="John Doe"),
+ *     @OA\Property(property="ship_street", type="string", example="123 Main St"),
+ *     @OA\Property(property="ship_street2", type="string", example="Apt 4B"),
+ *     @OA\Property(property="ship_city", type="string", example="New York"),
+ *     @OA\Property(property="ship_country", type="string", example="USA"),
+ *     @OA\Property(property="ship_state", type="string", example="NY"),
+ *     @OA\Property(property="ship_zipCode", type="string", example="10001"),
+ *     @OA\Property(property="ship_phone", type="string", example="9876543210"),
+ *     @OA\Property(property="comments", type="string", example="Handle with care"),
+ *     @OA\Property(property="totalpaid", type="number", format="float", example=1500.50),
+ *     @OA\Property(property="fromwebsite", type="string", example="Shopify"),
+ *     @OA\Property(property="billingtype", type="string", example="Prepaid"),
+ *     @OA\Property(property="transactionid", type="string", example="TXN12345"),
+ *     @OA\Property(property="payment_method", type="string", example="credit_card"),
+ *     @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
+ *     @OA\Property(property="fulfillment_status", type="string", enum={"fulfilled","unfulfilled","pending","cancelled","partial"}, example="fulfilled"),
+ *     @OA\Property(property="discount", type="number", format="float", example=50.00),
+ *     @OA\Property(property="coupon_code", type="string", example="SAVE10"),
+ *     @OA\Property(property="items", type="array", @OA\Items(ref="#/components/schemas/OrderItem"))
  * )
  * 
  * @OA\Schema(
  *     schema="OrdersResponse",
  *     type="object",
- *     @OA\Property(property="success", type="boolean"),
- *     @OA\Property(property="count", type="integer"),
- *     @OA\Property(
- *         property="orders",
- *         type="array",
- *         @OA\Items(ref="#/components/schemas/Order")
- *     )
+ *     @OA\Property(property="success", type="boolean", example=true),
+ *     @OA\Property(property="count", type="integer", example=2),
+ *     @OA\Property(property="orders", type="array", @OA\Items(ref="#/components/schemas/Order"))
  * )
  * 
  * @OA\Schema(
  *     schema="SingleOrderResponse",
  *     type="object",
- *     @OA\Property(property="success", type="boolean"),
+ *     @OA\Property(property="success", type="boolean", example=true),
  *     @OA\Property(property="order", ref="#/components/schemas/Order")
  * )
  * 
  * @OA\Schema(
  *     schema="OrderPrefixResponse",
  *     type="object",
- *     @OA\Property(property="success", type="boolean"),
- *     @OA\Property(property="count", type="integer"),
- *     @OA\Property(property="prefix_used", type="string"),
- *     @OA\Property(
- *         property="orders",
- *         type="array",
- *         @OA\Items(ref="#/components/schemas/Order")
- *     )
+ *     @OA\Property(property="success", type="boolean", example=true),
+ *     @OA\Property(property="count", type="integer", example=2),
+ *     @OA\Property(property="prefix_used", type="string", example="ORD123"),
+ *     @OA\Property(property="orders", type="array", @OA\Items(ref="#/components/schemas/Order"))
+ * )
+ * 
+ * @OA\Schema(
+ *     schema="OrderStatus",
+ *     type="object",
+ *     @OA\Property(property="success", type="boolean", example=true),
+ *     @OA\Property(property="count", type="integer", example=5),
+ *     @OA\Property(property="orders", type="array", @OA\Items(ref="#/components/schemas/Order"))
+ * )
+ * 
+ * @OA\Schema(
+ *     schema="OrderByDate",
+ *     type="object",
+ *     @OA\Property(property="success", type="boolean", example=true),
+ *     @OA\Property(property="date", type="string", format="date", example="2024-01-15"),
+ *     @OA\Property(property="count", type="integer", example=3),
+ *     @OA\Property(property="orders", type="array", @OA\Items(ref="#/components/schemas/Order"))
+ * )
+ * 
+ * @OA\Schema(
+ *     schema="ErrorResponse",
+ *     type="object",
+ *     @OA\Property(property="success", type="boolean", example=false),
+ *     @OA\Property(property="message", type="string", example="No orders found")
+ * )
+ * 
+ * @OA\Schema(
+ *     schema="ValidationErrorResponse",
+ *     type="object",
+ *     @OA\Property(property="success", type="boolean", example=false),
+ *     @OA\Property(property="errors", type="object", @OA\Property(property="field_name", type="array", @OA\Items(type="string", example="The field is required.")))
  * )
  */
 class OrderController extends Controller
 {
-/**
- * @OA\Post(
- *     path="/api/ordersdetail",
- *     summary="Get orders with filters",
- *     description="Filter orders by store, order status, and date range (JSON body)",
- *     tags={"Orders"},
- *
- *     @OA\RequestBody(
- *         required=false,
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(property="storeid", type="integer", example=15),
- *             @OA\Property(
- *                 property="order_status",
- *                 type="string",
- *                 enum={"pending","paid"},
- *                 example="paid"
- *             ),
- *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
- *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
- *         )
- *     ),
- *
- *     @OA\Response(
- *         response=200,
- *         description="Orders fetched successfully"
- *     ),
- *     @OA\Response(response=422, description="Validation error"),
- *     @OA\Response(response=401, description="Unauthorized")
- * )
- */
-
-
-
+    /**
+     * @OA\Post(
+     *     path="/api/ordersdetail",
+     *     summary="Get orders with filters",
+     *     description="Filter orders using JSON request body",
+     *     tags={"Orders"},
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="storeid", type="integer", example=15),
+     *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
+     *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
+     *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrdersResponse")),
+     *     @OA\Response(response=404, description="No orders found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
+     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
+     * )
+     */
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -153,14 +146,14 @@ class OrderController extends Controller
             'start_date'   => 'nullable|date_format:Y-m-d',
             'end_date'     => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors'  => $validator->errors()
             ], 422);
         }
-    
+
         $orders = Order::with('items')
             ->when($request->storeid, function ($q) use ($request) {
                 $q->where('user_id', $request->storeid);
@@ -168,23 +161,21 @@ class OrderController extends Controller
             ->when($request->order_status, function ($q) use ($request) {
                 $q->where('order_status', $request->order_status);
             })
-            ->when(
-                $request->start_date && $request->end_date,
-                function ($q) use ($request) {
-                    $q->whereBetween('created_at', [
-                        $request->start_date . ' 00:00:00',
-                        $request->end_date . ' 23:59:59',
-                    ]);
-                }
-            )
+            ->when($request->start_date && $request->end_date, function ($q) use ($request) {
+                $q->whereBetween('created_at', [
+                    $request->start_date . ' 00:00:00',
+                    $request->end_date . ' 23:59:59',
+                ]);
+            })
             ->get();
-    
-        if ($orders->isEmpty()) { 
+
+        if ($orders->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'No orders found'
             ], 404);
         }
+
         $formattedOrders = $orders->map(function ($order) {
             return [
                 'id' => $order->id,
@@ -230,6 +221,7 @@ class OrderController extends Controller
                 }),
             ];
         });
+
         return response()->json([
             'success' => true,
             'count'   => $formattedOrders->count(),
@@ -243,48 +235,12 @@ class OrderController extends Controller
      *     summary="Get orders by user ID",
      *     description="Returns all orders with items for a specific user",
      *     tags={"Orders"},
-     * @OA\Parameter(
- *         name="status",
- *         in="query",
- *         required=false,
- *         description="Filter orders by fulfillment status",
- *         @OA\Schema(
- *             type="string",
- *             example="fulfilled"
- *         )
- *     ),
- *
- *     @OA\Parameter(
- *         name="date",
- *         in="query",
- *         required=false,
- *         description="Filter orders by created date (YYYY-MM-DD)",
- *         @OA\Schema(
- *             type="string",
- *             format="date",
- *             example="2024-01-15"
- *         )
- *     ),
-     *     @OA\Parameter(
-     *         name="userId",
-     *         in="path",
-     *         required=true,
-     *         description="User ID",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Orders fetched successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/OrdersResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Orders not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="No orders found")
-     *         )
-     *     )
+     *     @OA\Parameter(name="userId", in="path", required=true, description="User ID", @OA\Schema(type="integer", example=1)),
+     *     @OA\Parameter(name="status", in="query", required=false, description="Filter orders by fulfillment status", @OA\Schema(type="string", enum={"fulfilled","unfulfilled"}, example="fulfilled")),
+     *     @OA\Parameter(name="date", in="query", required=false, description="Filter orders by created date (YYYY-MM-DD)", @OA\Schema(type="string", format="date", example="2024-01-15")),
+     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrdersResponse")),
+     *     @OA\Response(response=404, description="Orders not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
+     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
      * )
      */
     public function show(Request $request, $userId)
@@ -293,14 +249,17 @@ class OrderController extends Controller
             'status' => 'nullable|in:fulfilled,unfulfilled',
             'date'   => 'nullable|date_format:Y-m-d',
         ]);
+        
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors'  => $validator->errors()
             ], 422);
         }
+        
         $status = $request->query('status'); 
         $date   = $request->query('date');   
+        
         $orders = Order::with('items')
             ->where('user_id', $userId)
             ->when($status, function ($query) use ($status) {
@@ -362,6 +321,7 @@ class OrderController extends Controller
                 }),
             ];
         });
+        
         return response()->json([
             'success' => true,
             'count'   => $formattedOrderbyid->count(),
@@ -375,47 +335,12 @@ class OrderController extends Controller
      *     summary="Get orders by Order ID prefix",
      *     description="Returns all orders matching the order ID prefix",
      *     tags={"Orders"},
-     * @OA\Parameter(
- *         name="status",
- *         in="query",
- *         required=false,
- *         description="Filter orders by fulfillment status",
- *         @OA\Schema(
- *             type="string",
- *             example="fulfilled"
- *         )
- *     ),
- *     @OA\Parameter(
- *         name="date",
- *         in="query",
- *         required=false,
- *         description="Filter orders by created date (YYYY-MM-DD)",
- *         @OA\Schema(
- *             type="string",
- *             format="date",
- *             example="2024-01-15"
- *         )
- *     ),
-     *     @OA\Parameter(
-     *         name="orderId",
-     *         in="path",
-     *         required=true,
-     *         description="Order ID or prefix (e.g., ORD123, #ORD1234567)",
-     *         @OA\Schema(type="string", example="ORD123")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Orders fetched successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/OrderPrefixResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Orders not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="No orders found for this prefix")
-     *         )
-     *     )
+     *     @OA\Parameter(name="orderId", in="path", required=true, description="Order ID or prefix (e.g., ORD123, #ORD1234567)", @OA\Schema(type="string", example="ORD123")),
+     *     @OA\Parameter(name="status", in="query", required=false, description="Filter orders by fulfillment status", @OA\Schema(type="string", enum={"fulfilled","unfulfilled"}, example="fulfilled")),
+     *     @OA\Parameter(name="date", in="query", required=false, description="Filter orders by created date (YYYY-MM-DD)", @OA\Schema(type="string", format="date", example="2024-01-15")),
+     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrderPrefixResponse")),
+     *     @OA\Response(response=404, description="Orders not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
+     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
      * )
      */
     public function showOrderPrefix(Request $request, $orderId)
@@ -424,34 +349,30 @@ class OrderController extends Controller
             'status' => 'nullable|in:fulfilled,unfulfilled',
             'date'   => 'nullable|date_format:Y-m-d',
         ]);
+        
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors'  => $validator->errors()
             ], 422);
         }
+        
         $status = $request->query('status'); 
         $date   = $request->query('date');  
 
         $orderId = urldecode($orderId);
         $orderId = ltrim($orderId, '#');
 
-        // Extract alphabetic prefix
         preg_match('/^([A-Za-z]+)/', $orderId, $matches);
         $alphaPrefix = $matches[1] ?? '';
-
-        // Extract numeric part
         $numericPart = substr($orderId, strlen($alphaPrefix));
 
-        // Remove last 4 digits ONLY if numeric part length > 4
         if (strlen($numericPart) > 4) {
             $numericPart = substr($numericPart, 0, -4);
         }
 
-        // Final prefix
         $finalPrefix = $alphaPrefix . $numericPart;
 
-        // Fetch orders
         $orders = Order::with('items')
             ->where('orderid', 'LIKE', $finalPrefix . '%')
             ->when($status, function ($query) use ($status) {
@@ -526,47 +447,12 @@ class OrderController extends Controller
      *     summary="Get order by ID",
      *     description="Returns a single order with items for a specific ID",
      *     tags={"Orders"},
-     *  * @OA\Parameter(
- *         name="status",
- *         in="query",
- *         required=false,
- *         description="Filter orders by fulfillment status",
- *         @OA\Schema(
- *             type="string",
- *             example="fulfilled"
- *         )
- *     ),
- *     @OA\Parameter(
- *         name="date",
- *         in="query",
- *         required=false,
- *         description="Filter orders by created date (YYYY-MM-DD)",
- *         @OA\Schema(
- *             type="string",
- *             format="date",
- *             example="2024-01-15"
- *         )
- *     ),
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="Order ID",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Order fetched successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/SingleOrderResponse")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Order not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Order not found")
-     *         )
-     *     )
+     *     @OA\Parameter(name="id", in="path", required=true, description="Order ID", @OA\Schema(type="integer", example=1)),
+     *     @OA\Parameter(name="status", in="query", required=false, description="Filter orders by fulfillment status", @OA\Schema(type="string", enum={"fulfilled","unfulfilled"}, example="fulfilled")),
+     *     @OA\Parameter(name="date", in="query", required=false, description="Filter orders by created date (YYYY-MM-DD)", @OA\Schema(type="string", format="date", example="2024-01-15")),
+     *     @OA\Response(response=200, description="Order fetched successfully", @OA\JsonContent(ref="#/components/schemas/SingleOrderResponse")),
+     *     @OA\Response(response=404, description="Order not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
+     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
      * )
      */
     public function showOrderId(Request $request, $Id)
@@ -575,12 +461,14 @@ class OrderController extends Controller
             'status' => 'nullable|in:fulfilled,unfulfilled',
             'date'   => 'nullable|date_format:Y-m-d',
         ]);
+        
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors'  => $validator->errors()
             ], 422);
         }
+        
         $status = $request->query('status'); 
         $date   = $request->query('date');  
 
@@ -650,38 +538,17 @@ class OrderController extends Controller
         ]);
     }
 
-     /**
-      * @OA\Get(
- *     path="/api/ordersdetail/orderstatus",
- *     summary="Get orders by fulfillment status",
- *     description="Fetch all orders filtered by fulfillment status (fulfilled, unfulfilled, pending, cancelled)",
- *     operationId="getOrdersByStatus",
- *     tags={"Orders"},
- *
- *     @OA\Parameter(
- *         name="status",
- *         in="query",
- *         required=true,
- *         description="Fulfillment status of the order",
- *         @OA\Schema(
- *             type="string",
- *             enum={"fulfilled","unfulfilled","pending","cancelled","partial"},
- *             example="fulfilled"
- *         )
- *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Order fetched successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/OrderStatus")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Order not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Order not found")
-     *         )
-     *     )
+    /**
+     * @OA\Get(
+     *     path="/api/ordersdetail/orderstatus",
+     *     summary="Get orders by fulfillment status",
+     *     description="Fetch all orders filtered by fulfillment status",
+     *     operationId="getOrdersByStatus",
+     *     tags={"Orders"},
+     *     @OA\Parameter(name="status", in="query", required=true, description="Fulfillment status of the order", @OA\Schema(type="string", enum={"fulfilled","unfulfilled"}, example="fulfilled")),
+     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrderStatus")),
+     *     @OA\Response(response=404, description="Orders not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
+     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
      * )
      */
     public function getOrdersByStatus(Request $request)
@@ -689,7 +556,8 @@ class OrderController extends Controller
         $request->validate([
             'status' => 'required|in:fulfilled,unfulfilled'
         ]);
-        $status = $request->query('status'); // fulfilled | unfulfilled
+        
+        $status = $request->query('status');
 
         $orders = Order::with('items')
             ->when($status, function ($query) use ($status) {
@@ -748,43 +616,24 @@ class OrderController extends Controller
                 }),
             ];
         });
+        
         return response()->json([
             'success' => true,
             'count'   => $formattedOrderbystatus->count(),
             'orders'  => $formattedOrderbystatus,
         ]);
     }
+
     /**
- * @OA\Get(
- *     path="/api/ordersdetail/orderdate",
- *     summary="Get orders by created date",
- *     description="Fetch all orders by matching DATE",
- *     tags={"Orders"},
- *
- *     @OA\Parameter(
- *         name="date",
- *         in="query",
- *         required=true,
- *         description="Order creation date (YYYY-MM-DD)",
- *         @OA\Schema(
- *             type="string",
- *             format="date",
- *             example="2024-01-15"
- *         )
- *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Order fetched successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/OrderByDate")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Order not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Order not found")
-     *         )
-     *     )
+     * @OA\Get(
+     *     path="/api/ordersdetail/orderdate",
+     *     summary="Get orders by created date",
+     *     description="Fetch all orders by matching DATE",
+     *     tags={"Orders"},
+     *     @OA\Parameter(name="date", in="query", required=true, description="Order creation date (YYYY-MM-DD)", @OA\Schema(type="string", format="date", example="2024-01-15")),
+     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrderByDate")),
+     *     @OA\Response(response=404, description="Orders not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
+     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
      * )
      */
     public function getOrdersByDate(Request $request)
@@ -859,6 +708,4 @@ class OrderController extends Controller
             'orders'  => $formattedOrders,
         ]);
     }
-    
-
 }

@@ -18,7 +18,7 @@
                     "Orders"
                 ],
                 "summary": "Get orders with filters",
-                "description": "Filter orders by store, order status, and date range (JSON body)",
+                "description": "Filter orders using JSON request body",
                 "operationId": "a6b919e29989950afe39bdb6a07e564f",
                 "requestBody": {
                     "required": false,
@@ -56,13 +56,34 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Orders fetched successfully"
+                        "description": "Orders fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrdersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No orders found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation error"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -77,12 +98,26 @@
                 "operationId": "5ac83c8cd74c6852f4526ac12d1eb71a",
                 "parameters": [
                     {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "Filter orders by fulfillment status",
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "enum": [
+                                "fulfilled",
+                                "unfulfilled"
+                            ],
                             "example": "fulfilled"
                         }
                     },
@@ -95,16 +130,6 @@
                             "type": "string",
                             "format": "date",
                             "example": "2024-01-15"
-                        }
-                    },
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
                         }
                     }
                 ],
@@ -124,17 +149,17 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "No orders found"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
                                 }
                             }
                         }
@@ -152,12 +177,26 @@
                 "operationId": "68ce30fe23f64c71cc9a6b2e2167cc3a",
                 "parameters": [
                     {
+                        "name": "orderId",
+                        "in": "path",
+                        "description": "Order ID or prefix (e.g., ORD123, #ORD1234567)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "ORD123"
+                        }
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "Filter orders by fulfillment status",
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "enum": [
+                                "fulfilled",
+                                "unfulfilled"
+                            ],
                             "example": "fulfilled"
                         }
                     },
@@ -170,16 +209,6 @@
                             "type": "string",
                             "format": "date",
                             "example": "2024-01-15"
-                        }
-                    },
-                    {
-                        "name": "orderId",
-                        "in": "path",
-                        "description": "Order ID or prefix (e.g., ORD123, #ORD1234567)",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "example": "ORD123"
                         }
                     }
                 ],
@@ -199,17 +228,17 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "No orders found for this prefix"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
                                 }
                             }
                         }
@@ -227,12 +256,26 @@
                 "operationId": "994937d3c785f3887489a3c44bbfaca4",
                 "parameters": [
                     {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "Filter orders by fulfillment status",
                         "required": false,
                         "schema": {
                             "type": "string",
+                            "enum": [
+                                "fulfilled",
+                                "unfulfilled"
+                            ],
                             "example": "fulfilled"
                         }
                     },
@@ -245,16 +288,6 @@
                             "type": "string",
                             "format": "date",
                             "example": "2024-01-15"
-                        }
-                    },
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Order ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
                         }
                     }
                 ],
@@ -274,17 +307,17 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Order not found"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
                                 }
                             }
                         }
@@ -298,7 +331,7 @@
                     "Orders"
                 ],
                 "summary": "Get orders by fulfillment status",
-                "description": "Fetch all orders filtered by fulfillment status (fulfilled, unfulfilled, pending, cancelled)",
+                "description": "Fetch all orders filtered by fulfillment status",
                 "operationId": "getOrdersByStatus",
                 "parameters": [
                     {
@@ -310,10 +343,7 @@
                             "type": "string",
                             "enum": [
                                 "fulfilled",
-                                "unfulfilled",
-                                "pending",
-                                "cancelled",
-                                "partial"
+                                "unfulfilled"
                             ],
                             "example": "fulfilled"
                         }
@@ -321,7 +351,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Order fetched successfully",
+                        "description": "Orders fetched successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -331,21 +361,21 @@
                         }
                     },
                     "404": {
-                        "description": "Order not found",
+                        "description": "Orders not found",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Order not found"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
                                 }
                             }
                         }
@@ -376,7 +406,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Order fetched successfully",
+                        "description": "Orders fetched successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -386,21 +416,21 @@
                         }
                     },
                     "404": {
-                        "description": "Order not found",
+                        "description": "Orders not found",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Order not found"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
                                 }
                             }
                         }
@@ -414,42 +444,17 @@
             "OrderItem": {
                 "properties": {
                     "item_code": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "RNG001"
                     },
                     "quantity": {
-                        "type": "integer"
+                        "type": "integer",
+                        "example": 1
                     },
                     "price": {
                         "type": "number",
-                        "format": "float"
-                    }
-                },
-                "type": "object"
-            },
-            "OrderStatus": {
-                "properties": {
-                    "success": {
-                        "type": "boolean"
-                    },
-                    "status": {
-                        "type": "string"
-                    },
-                    "count": {
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "OrderByDate": {
-                "properties": {
-                    "success": {
-                        "type": "boolean"
-                    },
-                    "date": {
-                        "type": "string"
-                    },
-                    "count": {
-                        "type": "integer"
+                        "format": "float",
+                        "example": 1500.5
                     }
                 },
                 "type": "object"
@@ -457,102 +462,158 @@
             "Order": {
                 "properties": {
                     "id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "example": 1
                     },
                     "store_id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "example": 10
                     },
                     "clientname": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "John Doe"
                     },
                     "clientemail": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "john@example.com"
                     },
                     "orderid": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "ORD123"
                     },
                     "shippingtypeName": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Express"
                     },
                     "phone": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "9876543210"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-01-15"
                     },
                     "currency": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "USD"
                     },
                     "bill_name": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "John Doe"
                     },
                     "bill_street": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "123 Main St"
                     },
                     "bill_street2": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Apt 4B"
                     },
                     "bill_city": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "New York"
                     },
                     "bill_country": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "USA"
                     },
                     "bill_state": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "NY"
                     },
                     "bill_zipCode": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "10001"
                     },
                     "bill_phone": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "9876543210"
                     },
                     "ship_name": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "John Doe"
                     },
                     "ship_street": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "123 Main St"
                     },
                     "ship_street2": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Apt 4B"
                     },
                     "ship_city": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "New York"
                     },
                     "ship_country": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "USA"
                     },
                     "ship_state": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "NY"
                     },
                     "ship_zipCode": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "10001"
                     },
                     "ship_phone": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "9876543210"
                     },
                     "comments": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Handle with care"
                     },
                     "totalpaid": {
                         "type": "number",
-                        "format": "float"
+                        "format": "float",
+                        "example": 1500.5
                     },
                     "fromwebsite": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Shopify"
                     },
                     "billingtype": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Prepaid"
                     },
                     "transactionid": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "TXN12345"
                     },
                     "payment_method": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "credit_card"
+                    },
+                    "order_status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "paid"
+                        ],
+                        "example": "paid"
+                    },
+                    "fulfillment_status": {
+                        "type": "string",
+                        "enum": [
+                            "fulfilled",
+                            "unfulfilled",
+                            "pending",
+                            "cancelled",
+                            "partial"
+                        ],
+                        "example": "fulfilled"
                     },
                     "discount": {
                         "type": "number",
-                        "format": "float"
+                        "format": "float",
+                        "example": 50
                     },
                     "coupon_code": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "SAVE10"
                     },
                     "items": {
                         "type": "array",
@@ -566,10 +627,12 @@
             "OrdersResponse": {
                 "properties": {
                     "success": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "example": true
                     },
                     "count": {
-                        "type": "integer"
+                        "type": "integer",
+                        "example": 2
                     },
                     "orders": {
                         "type": "array",
@@ -583,7 +646,8 @@
             "SingleOrderResponse": {
                 "properties": {
                     "success": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "example": true
                     },
                     "order": {
                         "$ref": "#/components/schemas/Order"
@@ -594,19 +658,99 @@
             "OrderPrefixResponse": {
                 "properties": {
                     "success": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "example": true
                     },
                     "count": {
-                        "type": "integer"
+                        "type": "integer",
+                        "example": 2
                     },
                     "prefix_used": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "ORD123"
                     },
                     "orders": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/Order"
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "OrderStatus": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Order"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "OrderByDate": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-01-15"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "orders": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Order"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "No orders found"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationErrorResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "errors": {
+                        "properties": {
+                            "field_name": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "example": "The field is required."
+                                }
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"
