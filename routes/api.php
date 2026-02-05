@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::post('/webhook/order-update', [OrdersController::class, 'webhookUpdateStatus'])->name('api.webhook.order.update');
 Route::prefix('ordersdetail')->name('api.orders.')->group(function () {
     Route::post('/', [OrderController::class, 'index'])->name('index');
-    Route::any('storeid/{userId}', [OrderController::class, 'show'])->name('show');
+    Route::any('storeid/{storeid}', [OrderController::class, 'show'])->name('show');
     Route::get('/orderprefix/{orderId}', [OrderController::class, 'showOrderPrefix'])->name('showOrderPrefix');
     Route::get('/orderid/{Id}', [OrderController::class, 'showOrderId'])->name('showOrderId');
     Route::get('/orderstatus', [OrderController::class, 'getOrdersByStatus'])->name('getOrdersByStatus');

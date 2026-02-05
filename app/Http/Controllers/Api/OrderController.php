@@ -231,13 +231,13 @@ class OrderController extends Controller
 
 /**
  * @OA\Post(
- *     path="/api/ordersdetail/storeid/{userId}",
+ *     path="/api/ordersdetail/storeid/{storeid}",
  *     summary="Get orders by user ID (with filters)",
  *     description="Returns all orders with items for a specific user using JSON body filters",
  *     tags={"Orders"},
  *
  *     @OA\Parameter(
- *         name="userId",
+ *         name="storeid",
  *         in="path",
  *         required=true,
  *         @OA\Schema(type="integer", example=15)
@@ -268,7 +268,7 @@ class OrderController extends Controller
  * )
  */
 
-    public function show(Request $request, $userId)
+    public function show(Request $request, $storeid)
 {
     $validator = Validator::make($request->all(), [
         'order_status' => 'nullable|in:pending,paid',
@@ -284,7 +284,7 @@ class OrderController extends Controller
     }
 
     $orders = Order::with('items')
-        ->where('user_id', $userId)
+        ->where('user_id', $storeid)
         ->when($request->order_status, fn($q) =>
             $q->where('order_status', $request->order_status)
         )
