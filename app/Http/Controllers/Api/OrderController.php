@@ -229,27 +229,45 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * @OA\POST(
-     *     path="/api/ordersdetail/storeid/{userId}",
-     *     summary="Get orders by user ID",
-     *     description="Returns all orders with items for a specific user",
-     *     tags={"Orders"},
-     *     @OA\RequestBody(
-     *         required=false,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="user_id", type="integer", example=15),
-     *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
-     *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
-     *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Orders fetched successfully", @OA\JsonContent(ref="#/components/schemas/OrdersResponse")),
-     *     @OA\Response(response=404, description="Orders not found", @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
-     *     @OA\Response(response=422, description="Validation error", @OA\JsonContent(ref="#/components/schemas/ValidationErrorResponse"))
-     * )
-     */
+/**
+ * @OA\Post(
+ *     path="/api/ordersdetail/storeid/{userId}",
+ *     summary="Get orders by user ID (with filters)",
+ *     description="Returns all orders with items for a specific user using JSON body filters",
+ *     tags={"Orders"},
+ *
+ *     @OA\Parameter(
+ *         name="userId",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer", example=15)
+ *     ),
+ *
+ *     @OA\RequestBody(
+ *         required=false,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
+ *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
+ *             @OA\Property(property="end_date", type="string", format="date", example="2024-01-31")
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="Orders fetched successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Orders not found"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error"
+ *     )
+ * )
+ */
+
     public function show(Request $request, $userId)
 {
     $validator = Validator::make($request->all(), [

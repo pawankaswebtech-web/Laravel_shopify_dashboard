@@ -93,19 +93,26 @@
                 "tags": [
                     "Orders"
                 ],
-                "summary": "Get orders by user ID",
-                "description": "Returns all orders with items for a specific user",
+                "summary": "Get orders by user ID (with filters)",
+                "description": "Returns all orders with items for a specific user using JSON body filters",
                 "operationId": "76d1618cc8f0f7c1a2922ba0c4e418d0",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 15
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": false,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_id": {
-                                        "type": "integer",
-                                        "example": 15
-                                    },
                                     "order_status": {
                                         "type": "string",
                                         "enum": [
@@ -132,34 +139,13 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Orders fetched successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OrdersResponse"
-                                }
-                            }
-                        }
+                        "description": "Orders fetched successfully"
                     },
                     "404": {
-                        "description": "Orders not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
+                        "description": "Orders not found"
                     },
                     "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationErrorResponse"
-                                }
-                            }
-                        }
+                        "description": "Validation error"
                     }
                 }
             }
