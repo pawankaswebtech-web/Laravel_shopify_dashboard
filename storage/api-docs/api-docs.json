@@ -89,13 +89,13 @@
             }
         },
         "/api/ordersdetail/storeid/{userId}": {
-            "get": {
+            "post": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Get orders by user ID",
                 "description": "Returns all orders with items for a specific user",
-                "operationId": "5ac83c8cd74c6852f4526ac12d1eb71a",
+                "operationId": "76d1618cc8f0f7c1a2922ba0c4e418d0",
                 "requestBody": {
                     "required": false,
                     "content": {
