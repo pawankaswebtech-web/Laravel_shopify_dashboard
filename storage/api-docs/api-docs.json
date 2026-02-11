@@ -318,49 +318,6 @@
                     }
                 }
             }
-        },
-        "/api/ordersdetail/orderdate": {
-            "get": {
-                "tags": [
-                    "Orders"
-                ],
-                "summary": "Get orders by created date",
-                "description": "Fetch all orders by matching DATE",
-                "operationId": "093ce424e9dfd3d807032d238c16c798",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "start_date": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2024-01-01"
-                                    },
-                                    "end_date": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2024-01-31"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Orders fetched successfully"
-                    },
-                    "404": {
-                        "description": "Orders not found"
-                    },
-                    "422": {
-                        "description": "Validation error"
-                    }
-                }
-            }
         }
     },
     "components": {
