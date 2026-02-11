@@ -631,20 +631,26 @@ class OrderController extends Controller
             'order'   => $formattedOrder,
         ]);
     }
-     /**
-     * @OA\POST(
-     *     path="/api/ordersdetail/orderstatus",
-     *     summary="Get orders by order status",
-     *     description="Fetch all orders filtered by order status",
-     *     operationId="getOrdersByStatus",
-     *     tags={"Orders"},
-     *     @OA\RequestBody(
-     *         required=false,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="order_status", type="string", enum={"pending","paid"}, example="paid"),
-     *         )
-     *     ),
+ /**
+ * @OA\GET(
+ *     path="/api/ordersdetail/orderstatus",
+ *     summary="Get orders by order status",
+ *     description="Fetch all orders filtered by order status",
+ *     operationId="getOrdersByStatus",
+ *     tags={"Orders"},
+ *     
+ *     @OA\Parameter(
+ *         name="status",
+ *         in="query",
+ *         required=true,
+ *         description="Order status filter",
+ *         @OA\Schema(
+ *             type="string",
+ *             enum={"pending","paid"},
+ *             example="paid"
+ *         )
+ *     ),
+ *
  *     @OA\Response(
  *         response=200,
  *         description="Orders fetched successfully"
@@ -658,14 +664,15 @@ class OrderController extends Controller
  *         description="Validation error"
  *     )
  * )
-     */
+ */
+
     public function getOrdersByStatus(Request $request)
     {
         $request->validate([
             'status' => 'required|in:paid,pending'
         ]);
         
-        $status = $request->input('status');
+        $status = $request->query('status');
 
         $orders = Order::with('items')
             ->when($status, function ($query) use ($status) {
@@ -733,7 +740,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @OA\POST(
+     * @OA\GET(
      *     path="/api/ordersdetail/orderdate",
      *     summary="Get orders by created date",
      *     description="Fetch all orders by matching DATE",
@@ -766,8 +773,7 @@ class OrderController extends Controller
             'date' => 'required|date'
         ]);
     
-        $date = Carbon::parse($request->input('date'))->toDateString();
-
+        $date = Carbon::parse($request->query('date'))->toDateString();
     
         $orders = Order::with('items')
             ->whereDate('created_at', $date)
