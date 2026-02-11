@@ -665,7 +665,7 @@ class OrderController extends Controller
             'status' => 'required|in:paid,pending'
         ]);
         
-        $status = $request->query('status');
+        $status = $request->input('status');
 
         $orders = Order::with('items')
             ->when($status, function ($query) use ($status) {
@@ -766,7 +766,8 @@ class OrderController extends Controller
             'date' => 'required|date'
         ]);
     
-        $date = Carbon::parse($request->query('date'))->toDateString();
+        $date = Carbon::parse($request->input('date'))->toDateString();
+
     
         $orders = Order::with('items')
             ->whereDate('created_at', $date)
