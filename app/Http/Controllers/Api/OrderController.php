@@ -634,8 +634,8 @@ class OrderController extends Controller
      /**
      * @OA\POST(
      *     path="/api/ordersdetail/orderstatus",
-     *     summary="Get orders by fulfillment status",
-     *     description="Fetch all orders filtered by fulfillment status",
+     *     summary="Get orders by order status",
+     *     description="Fetch all orders filtered by order status",
      *     operationId="getOrdersByStatus",
      *     tags={"Orders"},
      *     @OA\RequestBody(
@@ -662,7 +662,7 @@ class OrderController extends Controller
     public function getOrdersByStatus(Request $request)
     {
         $request->validate([
-            'status' => 'required|in:fulfilled,unfulfilled'
+            'status' => 'required|in:paid,pending'
         ]);
         
         $status = $request->query('status');
