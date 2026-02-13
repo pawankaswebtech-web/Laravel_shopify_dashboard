@@ -175,7 +175,10 @@ class OrdersCreateJob implements ShouldQueue
             'payment_method' => $shopifyOrder['payment_gateway_names'][0] ?? 0,
             'discount' => $shopifyOrder['total_discounts'] ?? 0,
             'discount' => $shopifyOrder['total_discounts'] ?? 0,
-           'date' => \Carbon\Carbon::parse($shopifyOrder['created_at'])->toDateString(),
+           'date' => \Carbon\Carbon::parse(
+    data_get($shopifyOrder, 'created_at', now())
+)->toDateString(),
+
 
 
             'fromwebsite' =>  $this->shopDomain , // As per req example
@@ -222,7 +225,10 @@ class OrdersCreateJob implements ShouldQueue
             'billingtype' => $data['billingtype'],
             'transactionid' => $data['transactionid'],
             'discount' => $data['discount'] ?? 0,
-            'date' => \Carbon\Carbon::parse($data['created_at'])->toDateString(),
+           'date' => isset($data['created_at'])
+    ? \Carbon\Carbon::parse($data['created_at'])->toDateString()
+    : now()->toDateString(),
+
 
             'payment_method' => $data['payment_method'] ?? null,
             // Default statuses as they are not in the JSON structure for PUSH
