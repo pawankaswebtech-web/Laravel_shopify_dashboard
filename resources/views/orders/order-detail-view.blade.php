@@ -44,10 +44,10 @@
                     <th class="border p-2" style="min-width: 180px;">Shipping State </th>
                     <th class="border p-2" style="min-width: 180px;">Shipping Zipcode </th>
                     <th class="border p-2" style="min-width: 180px;">Shipping phone </th>
-                    <th class="border p-2" style="min-width: 100px;">comments</th>
-                    <th class="border p-2" style="min-width: 100px;">totalpaid </th>
+                    <th class="border p-2" style="min-width: 100px;">Comments</th>
+                    <th class="border p-2" style="min-width: 100px;">TotalPaid </th>
                     <th class="border p-2" style="min-width: 100px;">coupon_code </th>
-                    <th class="border p-2" style="min-width: 100px;">billingtype </th>
+                    <th class="border p-2" style="min-width: 100px;">BillingType </th>
                     <th class="border p-2" style="min-width: 100px;">transactionid </th>
                     <th class="border p-2" style="min-width: 100px;">From Website </th>
                     <th class="border p-2" style="min-width: 100px;">Currency </th>
@@ -85,12 +85,12 @@
                         <td class="border p-2">{{ $view->ship_state ?? '' }}</td>
                         <td class="border p-2">{{ $view->ship_zipCode ?? '' }}</td>
                         <td class="border p-2">{{ $view->ship_phone ?? '' }}</td>
-                        <td class="border p-2">{{ $view->comments ?? '' }}</td>
-                        <td class="border p-2">{{ $view->totalpaid ?? '' }}</td>
+                        <td class="border p-2">{{ $view->Comments ?? '' }}</td>
+                        <td class="border p-2">{{ $view->TotalPaid ?? '' }}</td>
                         <td class="border p-2">{{ $view->coupon_code ?? '' }}</td>
-                        <td class="border p-2">{{ $view->billingtype ?? '' }}</td>
+                        <td class="border p-2">{{ $view->BillingType ?? '' }}</td>
                         <td class="border p-2">{{ $view->transactionid ?? '' }}</td>
-                        <td class="border p-2">{{ $view->fromwebsite ?? '' }}</td>
+                        <td class="border p-2">{{ $view->FromWebsite ?? '' }}</td>
                         <td class="border p-2">{{ $view->currency ?? '' }}</td>
                         <td class="border p-2">{{ $view->payment_method ?? '' }}</td>
                         <td class="border p-2">{{ $view->discount ?? '' }}</td>

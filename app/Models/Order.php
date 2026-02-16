@@ -39,11 +39,11 @@ class Order extends Model
         'ship_state',
         'ship_zipCode',
         'ship_phone',
-        'comments',
-        'totalpaid',
+        'Comments',
+        'TotalPaid',
         'coupon_code',
-        'fromwebsite',
-        'billingtype',
+        'FromWebsite',
+        ' BillingType',
         'transactionid',
         'order_status',
         'payment_status',
@@ -56,7 +56,7 @@ class Order extends Model
      * Attribute casting
      */
     protected $casts = [
-        'totalpaid' => 'decimal:2',
+        'TotalPaid' => 'decimal:2',
     ];
 
     /**

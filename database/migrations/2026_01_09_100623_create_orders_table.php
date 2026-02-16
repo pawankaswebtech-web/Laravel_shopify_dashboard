@@ -36,10 +36,10 @@ return new class extends Migration {
             $table->string('ship_state')->nullable();
             $table->string('ship_zipCode')->nullable();
             $table->string('ship_phone')->nullable();
-            $table->text('comments')->nullable();
-            $table->decimal('totalpaid', 10, 2)->nullable();
-            $table->string('fromwebsite')->default('Shopify');
-            $table->string('billingtype')->nullable();
+            $table->text('Comments')->nullable();
+            $table->decimal('TotalPaid', 10, 2)->nullable();
+            $table->string('FromWebsite ')->default('Shopify');
+            $table->string('BillingType')->nullable();
             $table->string('transactionid')->nullable();
             $table->string('order_status')->default('pending');
             $table->string('payment_status')->default('pending');

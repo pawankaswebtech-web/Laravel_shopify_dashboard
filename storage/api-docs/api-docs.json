@@ -443,20 +443,20 @@
                         "type": "string",
                         "example": "9876543210"
                     },
-                    "comments": {
+                    "Comments": {
                         "type": "string",
                         "example": "Handle with care"
                     },
-                    "totalpaid": {
+                    "TotalPaid": {
                         "type": "number",
                         "format": "float",
                         "example": 1500.5
                     },
-                    "fromwebsite": {
+                    "FromWebsite": {
                         "type": "string",
                         "example": "Shopify"
                     },
-                    "billingtype": {
+                    "BillingType": {
                         "type": "string",
                         "example": "Prepaid"
                     },

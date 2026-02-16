@@ -170,8 +170,8 @@ class OrdersCreateJob implements ShouldQueue
             'ship_state' => $shipping['province_code'] ?? '',
             'ship_zipCode' => $shipping['zip'] ?? '',
             'ship_phone' => $shipping['phone'] ?? '0000000000',
-            'comments' => $shopifyOrder['note'] ?? '',
-            'totalpaid' => $shopifyOrder['total_price'] ?? 0,
+            'Comments' => $shopifyOrder['note'] ?? '',
+            'TotalPaid' => $shopifyOrder['total_price'] ?? 0,
             'payment_method' => $shopifyOrder['payment_gateway_names'][0] ?? 0,
             'discount' => $shopifyOrder['total_discounts'] ?? 0,
             'discount' => $shopifyOrder['total_discounts'] ?? 0,
@@ -181,8 +181,8 @@ class OrdersCreateJob implements ShouldQueue
 
 
 
-            'fromwebsite' =>  $this->shopDomain , // As per req example
-            'billingtype' =>  $shopifyOrder['payment_gateway_names'][0] ?? 0, // As per req example or map from gateway
+            'FromWebsite' =>  $this->shopDomain , // As per req example
+            'BillingType' =>  $shopifyOrder['payment_gateway_names'][0] ?? 0, // As per req example or map from gateway
             'rows' => $rows,
             'transactionid' => (string) $shopifyOrder['id'],
             'coupon_code' => $couponCode
@@ -219,10 +219,10 @@ class OrdersCreateJob implements ShouldQueue
             'ship_state' => $data['ship_state'],
             'ship_zipCode' => $data['ship_zipCode'],
             'ship_phone' => $data['ship_phone'],
-            'comments' => $data['comments'],
-            'totalpaid' => $data['totalpaid'],
-            'fromwebsite' => $data['fromwebsite'],
-            'billingtype' => $data['billingtype'],
+            'Comments' => $data['Comments'],
+            'TotalPaid' => $data['TotalPaid'],
+            'FromWebsite' => $data['FromWebsite'],
+            'BillingType' => $data['BillingType'],
             'transactionid' => $data['transactionid'],
             'discount' => $data['discount'] ?? 0,
            'date' => isset($data['created_at'])
