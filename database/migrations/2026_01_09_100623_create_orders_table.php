@@ -8,6 +8,7 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
+    //migrations
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
