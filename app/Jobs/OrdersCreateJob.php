@@ -73,7 +73,7 @@ class OrdersCreateJob implements ShouldQueue
                         'order_id' => $order->id,
                         'ItemCode' => $item['ItemCode'],
                         'Quantity' => $item['Quantity'],
-                        'Price'    => $item['Price'],
+                        'Price'    => (float) $item['Price'],
                         'discount' => $item['Discount'] ?? 0,
                     ]);
                 }
@@ -131,7 +131,7 @@ class OrdersCreateJob implements ShouldQueue
                 $rows[] = [
                     'ItemCode' => $item['sku'] ?? $item['product_id'],
                     'Quantity' => $item['quantity'],
-                    'Price'    => $item['price'],
+                    'Price'    =>(float) $item['price'],
                     'Discount' => $itemDiscount,
                 ];
             }
