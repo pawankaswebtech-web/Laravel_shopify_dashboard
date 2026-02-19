@@ -121,40 +121,24 @@ class OrderController extends Controller
 
     // Download Order JSON
     public function downloadJson($id)
-{
-    // Optional: if using signed URL
-    if (!request()->hasValidSignature()) {
-        abort(403, 'Invalid or expired download link');
-    }
+    {
+        $order = Order::where('user_id', $shop->id)->where('id', $id)->firstOrFail();
 
-    $shop = Auth::user();
+        // Construct filename: shopDomain-orderName (or orderId if name is null)
+        $filename = $shop->name . '-' . ($order->orderid ?: $order->shopify_order_id) . '.json';
+        $path = storage_path('app/internal_logs/requests/' . $filename);
 
-    $order = Order::where('user_id', $shop->id)
-                  ->where('id', $id)
-                  ->firstOrFail();
-
-    $filename = $shop->name . '-' . ($order->orderid ?: $order->shopify_order_id) . '.json';
-    $directory = storage_path('app/internal_logs/requests');
-
-    if (!file_exists($directory)) {
-        mkdir($directory, 0775, true);
-    }
-
-    $path = $directory . '/' . $filename;
-
-    // fallback file
-    if (!file_exists($path)) {
-        $altPath = $directory . '/' . $order->shopify_order_id . '.json';
-        if (file_exists($altPath)) {
-            return response()->download($altPath);
+        if (!file_exists($path)) {
+            // Fallback try with just ID if name-based fails (for older logs)
+            $altPath = storage_path('app/internal_logs/requests/' . $order->shopify_order_id . '.json');
+            if (file_exists($altPath)) {
+                return response()->download($altPath);
+            }
+            return back()->with('error', 'Log file not found.');
         }
-        return back()->with('error', 'Log file not found.');
-    }
 
-    return response()->download($path, $filename, [
-        'Content-Type' => 'application/json',
-    ]);
-}
+        return response()->download($path);
+    }
 
     // Webhook implementation for internal system updates
     public function webhookUpdateStatus(Request $request)
