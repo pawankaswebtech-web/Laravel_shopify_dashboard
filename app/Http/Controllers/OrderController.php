@@ -119,39 +119,44 @@ class OrderController extends Controller
     }
 
 
-//download json
+    // Download Order JSON
     public function downloadJson($id)
     {
-            $shop = Auth::user();
-            $order = Order::where('user_id', $shop->id)
-                        ->where('id', $id)
-                        ->firstOrFail();
+        // Verify signed URL to bypass Shopify session redirect
+        if (!request()->hasValidSignature()) {
+            abort(403, 'Invalid or expired download link');
+        }
 
-            // Construct filename: shopDomain-orderName (or orderId if name is null)
-            $filename = $shop->name . '-' . ($order->orderid ?: $order->shopify_order_id) . '.json';
-            $directory = storage_path('app/internal_logs/requests');
+        $shop = Auth::user();
 
-            // Ensure directory exists
-            if (!file_exists($directory)) {
-                mkdir($directory, 0775, true);
+        $order = Order::where('user_id', $shop->id)
+            ->where('id', $id)
+            ->firstOrFail();
+
+        // Construct filename: shopDomain-orderName (or orderId if name is null)
+        $filename = $shop->name . '-' . ($order->orderid ?: $order->shopify_order_id) . '.json';
+
+        // Ensure folder exists
+        $directory = storage_path('app/internal_logs/requests');
+        if (!file_exists($directory)) {
+            mkdir($directory, 0775, true);
+        }
+
+        $path = $directory . '/' . $filename;
+
+        // Fallback to old file if main file missing
+        if (!file_exists($path)) {
+            $altPath = $directory . '/' . $order->shopify_order_id . '.json';
+            if (file_exists($altPath)) {
+                return response()->download($altPath);
             }
 
-            $path = $directory . '/' . $filename;
+            return back()->with('error', 'Log file not found.');
+        }
 
-            // Check main file
-            if (!file_exists($path)) {
-                // Fallback try with just ID if name-based fails (for older logs)
-                $altPath = $directory . '/' . $order->shopify_order_id . '.json';
-                if (file_exists($altPath)) {
-                    return response()->download($altPath);
-                }
-
-                // Keep original redirect behavior
-                return back()->with('error', 'Log file not found.');
-            }
-
-            // Return download
-            return response()->download($path);
+        return response()->download($path, $filename, [
+            'Content-Type' => 'application/json',
+        ]);
     }
 
 
