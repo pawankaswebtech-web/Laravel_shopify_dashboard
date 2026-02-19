@@ -120,31 +120,26 @@ class OrderController extends Controller
 
 
     // Download Order JSON
-   public function downloadJson($id)
-{
-    if (!request()->hasValidSignature()) {
-        abort(403, 'Invalid or expired download link');
+    public function downloadJson($id)
+    {
+        $shop = Auth::user();
+        $order = Order::where('user_id', $shop->id)->where('id', $id)->firstOrFail();
+
+        // Construct filename: shopDomain-orderName (or orderId if name is null)
+        $filename = $shop->name . '-' . ($order->orderid ?: $order->shopify_order_id) . '.json';
+        $path = storage_path('app/internal_logs/requests/' . $filename);
+
+        if (!file_exists($path)) {
+            // Fallback try with just ID if name-based fails (for older logs)
+            $altPath = storage_path('app/internal_logs/requests/' . $order->shopify_order_id . '.json');
+            if (file_exists($altPath)) {
+                return response()->download($altPath);
+            }
+            return back()->with('error', 'Log file not found.');
+        }
+
+        return response()->download($path);
     }
-
-    $order = Order::findOrFail($id); // no shop check
-
-    $filename = ($order->orderid ?: $order->shopify_order_id) . '.json';
-    $directory = storage_path('app/internal_logs/requests');
-    if (!file_exists($directory)) mkdir($directory, 0775, true);
-
-    $path = $directory . '/' . $filename;
-
-    if (!file_exists($path)) {
-        $altPath = $directory . '/' . $order->shopify_order_id . '.json';
-        if (file_exists($altPath)) return response()->download($altPath);
-        return back()->with('error', 'Log file not found.');
-    }
-
-    return response()->download($path, $filename, [
-        'Content-Type' => 'application/json',
-    ]);
-}
-
 
     // Webhook implementation for internal system updates
     public function webhookUpdateStatus(Request $request)
