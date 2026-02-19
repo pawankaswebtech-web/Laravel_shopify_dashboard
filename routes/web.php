@@ -29,12 +29,10 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/api/orders', [OrderController::class, 'fetchOrders'])->name('orders.fetch');
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update');
-    // Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
+   
 
 });
-Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])
-    ->name('orders.download.json')
-    ->middleware('auth');
+ Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
 
 Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
 Route::get('/order-details-view/{userId}', [OrderController::class, 'orderDetailView'])->name('orders.detailview');

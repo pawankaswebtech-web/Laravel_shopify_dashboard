@@ -1,6 +1,9 @@
 @extends('shopify-app::layouts.default')
 
 @section('content')
+@php
+    $signedUrl = URL::signedRoute('orders.download.json', ['id' => $order->id], now()->addMinutes(10));
+@endphp
     <div
         style="font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; padding: 20px; max-width: 1200px; margin: 0 auto;">
 
@@ -60,9 +63,7 @@
                                     <!-- <a href="{{ route('orders.download.json', $order->id) }}" style="display: inline-block; padding: 6px 12px; border: 1px solid #c9cccf; border-radius: 4px; color: #202223; text-decoration: none; font-size: 13px; font-weight: 500; background: #fff; transition: background-color 0.2s;">
                                        Download JSON
                                     </a> -->
-                                    <a href="{{ URL::signedRoute('orders.download.json', ['id' => $order->id], now()->addMinutes(10)) }}" style="display: inline-block; padding: 6px 12px; border: 1px solid #c9cccf; border-radius: 4px; color: #202223; text-decoration: none; font-size: 13px; font-weight: 500; background: #fff; transition: background-color 0.2s;">
-                                        Download JSON
-                                    </a>
+                                   <button id="download-json-btn">Download JSON</button>
                                 </td>
                             </tr>
                         @empty
@@ -88,3 +89,23 @@
         </div>
     </div>
 @endsection
+<script>
+document.getElementById('download-json-btn').addEventListener('click', function() {
+    fetch("{{ $signedUrl }}")
+        .then(response => {
+            if (!response.ok) throw new Error('Download failed');
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "{{ $order->shopify_order_id }}.json";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(err => alert(err.message));
+});
+</script>
