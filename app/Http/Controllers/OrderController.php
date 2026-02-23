@@ -227,7 +227,7 @@ class OrderController extends Controller
     $shippingCode = $shopifyOrder->shippingtypeName ?? 'Standard';
     $couponCode = $shopifyOrder->coupon_code ?? '';
 
-    // Prepare order items
+    // Prepare order items to fetch
     $rows = $shopifyOrder->items->map(function($item){
         return [
             'product_id' => $item->product_id,
