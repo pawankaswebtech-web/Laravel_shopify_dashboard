@@ -190,5 +190,82 @@ class OrderController extends Controller
             'order' => $order
         ]);
     }
+    public function resendOrderData($id)
+{
+    $shop = Auth::user();
+
+    // Fetch your order by ID
+    $shopifyOrder = Order::with(['customer', 'shippingAddress', 'billingAddress', 'items'])
+                         ->where('user_id', $shop->id)
+                         ->where('id', $id)
+                         ->firstOrFail();
+
+    // Prepare billing and shipping arrays (adjust your column names accordingly)
+    $customer = $shopifyOrder->customer ?? [];
+    $billing = $shopifyOrder->billingAddress ?? [];
+    $shipping = $shopifyOrder->shippingAddress ?? [];
+
+    $shippingCode = $shopifyOrder->shipping_type ?? 'Standard'; // example
+    $couponCode = $shopifyOrder->coupon_code ?? '';
+    $rows = $shopifyOrder->items->map(function($item){
+        return [
+            'product_id' => $item->product_id,
+            'title' => $item->title ?? '',
+            'quantity' => $item->quantity,
+            'price' => $item->price,
+            'sku' => $item->sku ?? '',
+        ];
+    })->toArray();
+
+    // Construct the payload
+    $orderData = [
+        'clientemail' => $shopifyOrder['email'] ?? '',
+        'clientname' => trim(($customer['first_name'] ?? '') . ' ' . ($customer['last_name'] ?? '')),
+        'orderid' => ltrim($shopifyOrder['name'] ?? '', '#'),
+        'shippingtypeName' => $shippingCode,
+        'phone' => $shopifyOrder['phone'] ?? $customer['phone'] ?? '0000000000',
+        'currency' => $shopifyOrder['currency'] ?? '',
+        'bill_name' => $billing['name'] ?? '',
+        'bill_street' => $billing['address1'] ?? '',
+        'bill_street2' => $billing['address2'] ?? '',
+        'bill_city' => $billing['city'] ?? '',
+        'bill_country' => $billing['country_code'] ?? '',
+        'bill_state' => $billing['province_code'] ?? '',
+        'bill_zipCode' => $billing['zip'] ?? '',
+        'bill_phone' => $billing['phone'] ?? '0000000000',
+        'ship_name' => $shipping['name'] ?? '',
+        'ship_street' => $shipping['address1'] ?? '',
+        'ship_street2' => $shipping['address2'] ?? '',
+        'ship_city' => $shipping['city'] ?? '',
+        'ship_country' => $shipping['country_code'] ?? '',
+        'ship_state' => $shipping['province_code'] ?? '',
+        'ship_zipCode' => $shipping['zip'] ?? '',
+        'ship_phone' => $shipping['phone'] ?? '0000000000',
+        'Comments' => $shopifyOrder['note'] ?? '',
+        'TotalPaid' => $shopifyOrder['total_price'] ?? 0,
+        'payment_method' => $shopifyOrder['payment_gateway_names'][0] ?? '',
+        'discount' => $shopifyOrder['total_discounts'] ?? 0,
+        'date' => Carbon::parse(data_get($shopifyOrder, 'created_at', now()))->toDateString(),
+        'FromWebsite' => $this->shopDomain ?? '',
+        'BillingType' => $shopifyOrder['payment_gateway_names'][0] ?? '',
+        'rows' => $rows,
+        'transactionid' => (string) ($shopifyOrder['id'] ?? ''),
+        'coupon_code' => $couponCode,
+    ];
+
+    // Send the POST request to the external endpoint
+    try {
+        $response = Http::withToken('coQFSMG*M3Ra2NKIcqUE32L2d')
+                        ->post('http://52.210.3.93/qms-funnel/orders', $orderData);
+
+        if($response->successful()){
+            return redirect()->back()->with('success', 'Order data re-sent successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to resend order: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Error sending order: ' . $e->getMessage());
+    }
+}
 
 }

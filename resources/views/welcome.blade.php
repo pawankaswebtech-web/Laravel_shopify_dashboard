@@ -61,6 +61,11 @@
                                        Download JSON
                                     </a>
                                 </td>
+                                <td style="padding: 12px 16px; text-align: center;">
+                                    <a href="{{ route('orders.resend-data', ['id' => $order->id]) }}" style="display: inline-block; padding: 6px 12px; border: 1px solid #c9cccf; border-radius: 4px; color: #202223; text-decoration: none; font-size: 13px; font-weight: 500; background: #fff; transition: background-color 0.2s;">
+                                      Resend Order
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>

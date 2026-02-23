@@ -34,6 +34,7 @@ Route::middleware(['verify.shopify'])->group(function () {
 });
  
  Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
+Route::get('/orders/{id}/resend-data', [OrderController::class, 'resendOrderData'])->name('orders.resend-data');
 Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
 Route::get('/order-details-view/{userId}', [OrderController::class, 'orderDetailView'])->name('orders.detailview');
 Route::get('/order-manage-status/{shopOrderId}/status', [OrderController::class, 'showOrderStatusForm'])->name('orders.status');
