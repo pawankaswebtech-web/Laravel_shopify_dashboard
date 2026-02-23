@@ -29,6 +29,19 @@
             <div class="mb-3">
                 <label class="form-label">Password</label>
                 <input type="password" name="password" class="form-control" required>
+                <div class="mb-3 position-relative">
+                    <label class="form-label">Password</label>
+
+                    <input type="password" 
+                        name="password" 
+                        id="password"
+                        class="form-control pe-5"
+                        required>
+
+                    <i class="bi bi-eye-slash position-absolute"
+                    id="togglePassword"
+                    style="top: 38px; right: 15px; cursor: pointer;"></i>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary w-100">
@@ -39,5 +52,21 @@
     </div>
 </div>
 
+<script>
+document.getElementById("togglePassword").addEventListener("click", function () {
+    const password = document.getElementById("password");
+    const icon = this;
+
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    } else {
+        password.type = "password";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    }
+});
+</script>
 </body>
 </html>
