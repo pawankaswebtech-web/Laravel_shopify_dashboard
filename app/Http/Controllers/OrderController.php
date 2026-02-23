@@ -9,6 +9,8 @@ use App\Services\Shopify\OrderService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
+
 class OrderController extends Controller
 {
       
@@ -194,19 +196,38 @@ class OrderController extends Controller
 {
     $shop = Auth::user();
 
-    // Fetch your order by ID
-    $shopifyOrder = Order::with(['customer', 'shippingAddress', 'billingAddress', 'items'])
-                         ->where('user_id', $shop->id)
+    // Fetch your order with items and shipping/billing info
+    $shopifyOrder = Order::where('user_id', $shop->id)
                          ->where('id', $id)
                          ->firstOrFail();
 
-    // Prepare billing and shipping arrays (adjust your column names accordingly)
-    $customer = $shopifyOrder->customer ?? [];
-    $billing = $shopifyOrder->billingAddress ?? [];
-    $shipping = $shopifyOrder->shippingAddress ?? [];
+    // Prepare billing and shipping arrays
+    $billing = [
+        'name' => $shopifyOrder->bill_name ?? '',
+        'address1' => $shopifyOrder->bill_street ?? '',
+        'address2' => $shopifyOrder->bill_street2 ?? '',
+        'city' => $shopifyOrder->bill_city ?? '',
+        'country_code' => $shopifyOrder->bill_country ?? '',
+        'province_code' => $shopifyOrder->bill_state ?? '',
+        'zip' => $shopifyOrder->bill_zipCode ?? '',
+        'phone' => $shopifyOrder->bill_phone ?? '0000000000',
+    ];
 
-    $shippingCode = $shopifyOrder->shipping_type ?? 'Standard'; // example
+    $shipping = [
+        'name' => $shopifyOrder->ship_name ?? '',
+        'address1' => $shopifyOrder->ship_street ?? '',
+        'address2' => $shopifyOrder->ship_street2 ?? '',
+        'city' => $shopifyOrder->ship_city ?? '',
+        'country_code' => $shopifyOrder->ship_country ?? '',
+        'province_code' => $shopifyOrder->ship_state ?? '',
+        'zip' => $shopifyOrder->ship_zipCode ?? '',
+        'phone' => $shopifyOrder->ship_phone ?? '0000000000',
+    ];
+
+    $shippingCode = $shopifyOrder->shippingtypeName ?? 'Standard';
     $couponCode = $shopifyOrder->coupon_code ?? '';
+
+    // Prepare order items
     $rows = $shopifyOrder->items->map(function($item){
         return [
             'product_id' => $item->product_id,
@@ -217,43 +238,43 @@ class OrderController extends Controller
         ];
     })->toArray();
 
-    // Construct the payload
+    // Construct payload exactly like your example
     $orderData = [
-        'clientemail' => $shopifyOrder['email'] ?? '',
-        'clientname' => trim(($customer['first_name'] ?? '') . ' ' . ($customer['last_name'] ?? '')),
-        'orderid' => ltrim($shopifyOrder['name'] ?? '', '#'),
+        'clientemail' => $shopifyOrder->email ?? '',
+        'clientname' => trim(($shopifyOrder->first_name ?? '') . ' ' . ($shopifyOrder->last_name ?? '')),
+        'orderid' => ltrim($shopifyOrder->name ?? '', '#'),
         'shippingtypeName' => $shippingCode,
-        'phone' => $shopifyOrder['phone'] ?? $customer['phone'] ?? '0000000000',
-        'currency' => $shopifyOrder['currency'] ?? '',
-        'bill_name' => $billing['name'] ?? '',
-        'bill_street' => $billing['address1'] ?? '',
-        'bill_street2' => $billing['address2'] ?? '',
-        'bill_city' => $billing['city'] ?? '',
-        'bill_country' => $billing['country_code'] ?? '',
-        'bill_state' => $billing['province_code'] ?? '',
-        'bill_zipCode' => $billing['zip'] ?? '',
-        'bill_phone' => $billing['phone'] ?? '0000000000',
-        'ship_name' => $shipping['name'] ?? '',
-        'ship_street' => $shipping['address1'] ?? '',
-        'ship_street2' => $shipping['address2'] ?? '',
-        'ship_city' => $shipping['city'] ?? '',
-        'ship_country' => $shipping['country_code'] ?? '',
-        'ship_state' => $shipping['province_code'] ?? '',
-        'ship_zipCode' => $shipping['zip'] ?? '',
-        'ship_phone' => $shipping['phone'] ?? '0000000000',
-        'Comments' => $shopifyOrder['note'] ?? '',
-        'TotalPaid' => $shopifyOrder['total_price'] ?? 0,
-        'payment_method' => $shopifyOrder['payment_gateway_names'][0] ?? '',
-        'discount' => $shopifyOrder['total_discounts'] ?? 0,
-        'date' => Carbon::parse(data_get($shopifyOrder, 'created_at', now()))->toDateString(),
+        'phone' => $shopifyOrder->phone ?? '0000000000',
+        'currency' => $shopifyOrder->currency ?? '',
+        'bill_name' => $billing['name'],
+        'bill_street' => $billing['address1'],
+        'bill_street2' => $billing['address2'],
+        'bill_city' => $billing['city'],
+        'bill_country' => $billing['country_code'],
+        'bill_state' => $billing['province_code'],
+        'bill_zipCode' => $billing['zip'],
+        'bill_phone' => $billing['phone'],
+        'ship_name' => $shipping['name'],
+        'ship_street' => $shipping['address1'],
+        'ship_street2' => $shipping['address2'],
+        'ship_city' => $shipping['city'],
+        'ship_country' => $shipping['country_code'],
+        'ship_state' => $shipping['province_code'],
+        'ship_zipCode' => $shipping['zip'],
+        'ship_phone' => $shipping['phone'],
+        'Comments' => $shopifyOrder->note ?? '',
+        'TotalPaid' => $shopifyOrder->total_price ?? 0,
+        'payment_method' => $shopifyOrder->payment_gateway_names ?? '',
+        'discount' => $shopifyOrder->total_discounts ?? 0,
+        'date' => Carbon::parse($shopifyOrder->created_at ?? now())->toDateString(),
         'FromWebsite' => $this->shopDomain ?? '',
-        'BillingType' => $shopifyOrder['payment_gateway_names'][0] ?? '',
+        'BillingType' => $shopifyOrder->payment_gateway_names ?? '',
         'rows' => $rows,
-        'transactionid' => (string) ($shopifyOrder['id'] ?? ''),
+        'transactionid' => (string) ($shopifyOrder->id ?? ''),
         'coupon_code' => $couponCode,
     ];
 
-    // Send the POST request to the external endpoint
+    // Send POST request
     try {
         $response = Http::withToken('coQFSMG*M3Ra2NKIcqUE32L2d')
                         ->post('http://52.210.3.93/qms-funnel/orders', $orderData);
