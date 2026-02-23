@@ -70,7 +70,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary w-100">
-                Send Reset Link
+                SendReset Link
             </button>
         </form>
       </div>
