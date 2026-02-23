@@ -264,6 +264,7 @@ public function resendOrderData($id)
         $response = Http::withToken('coQFSMG*M3Ra2NKIcqUE32L2d')
                         ->post('http://52.210.3.93/qms-funnel/orders', $orderData);
 
+        dd($orderData); 
       if ($response->successful()) {
             echo "Order data re-sent successfully!";
         } else {
