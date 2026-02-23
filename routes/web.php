@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,8 +38,22 @@ Route::middleware(['verify.shopify'])->group(function () {
 });
  Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
-    Route::get('/dashboard', function () { return view('dashboard');})->middleware('auth')->name('dashboard');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+  Route::middleware('auth')->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    Route::get('/stores', [DashboardController::class, 'stores'])
+        ->name('stores');
+
+    Route::get('/logs', [DashboardController::class, 'logs'])
+        ->name('logs');
+
+    Route::get('/swagger', [DashboardController::class, 'swagger'])
+        ->name('swagger');
+});
 
  Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
 Route::post('/orders/{id}/resend-data', [OrderController::class, 'resendOrderData'])->name('orders.resend-data');
