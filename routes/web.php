@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Auth\LoginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +27,10 @@ use App\Http\Controllers\OrderController;
 Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/', [OrderController::class, 'HomeRoute'])->name('home');
 
+    Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/api/orders', [OrderController::class, 'fetchOrders'])->name('orders.fetch');
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update');

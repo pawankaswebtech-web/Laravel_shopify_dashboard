@@ -102,11 +102,3 @@
         </div>
     </div>
 @endsection
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('resendButton');
-    btn.addEventListener('click', () => {
-        console.log('Resending data:', formData); 
-    });
-});
-</script>
