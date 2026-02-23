@@ -739,6 +739,71 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+ * @OA\PUT(
+ *     path="/api/ordersdetail/orderstatus",
+ *     summary="Update order status",
+ *     description="Update order status by order id",
+ *     operationId="updateOrderStatus",
+ *     tags={"Orders"},
+ *
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"order_id","status"},
+ *             @OA\Property(property="order_id", type="integer", example=1),
+ *             @OA\Property(
+ *                 property="status",
+ *                 type="string",
+ *                 enum={"pending","paid"},
+ *                 example="paid"
+ *             )
+ *         )
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="Order status updated successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Order not found"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validation error"
+ *     )
+ * )
+ */
+    public function updateOrderStatus(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'status'   => 'required|in:paid,pending'
+        ]);
+
+        $order = Order::find($request->order_id);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        $order->order_status = $request->status;
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order status updated successfully',
+            'order'   => [
+                'id' => $order->id,
+                'order_status' => $order->order_status
+            ]
+        ]);
+    }
+
 
    
 }
