@@ -265,9 +265,15 @@ public function resendOrderData($id)
                         ->post('http://52.210.3.93/qms-funnel/orders', $orderData);
 
         if ($response->successful()) {
-            return redirect()->back()->with('resend_status', 'Order data re-sent successfully!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Order data re-sent successfully!'
+            ]);
         } else {
-            return redirect()->back()->with('resend_status', 'Failed to resend order');
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to resend order: ' . $response->body()
+            ]);
         }
         
         }catch (\Exception $e) {
