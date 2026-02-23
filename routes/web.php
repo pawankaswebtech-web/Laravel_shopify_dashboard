@@ -29,8 +29,7 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/api/orders', [OrderController::class, 'fetchOrders'])->name('orders.fetch');
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update');
-  Route::get('/orders/{id}/resend-data', [OrderController::class, 'resendOrderData'])->name('orders.resend-data');
-
+  Route::get('/orders/{id}/resend-data/{token}', [OrderController::class, 'resendOrderData'])->name('orders.resend-data.public');
 });
  
  Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');

@@ -192,61 +192,46 @@ class OrderController extends Controller
             'order' => $order
         ]);
     }
-    public function resendOrderData($id)
+public function resendOrderData($id)
 {
-    $shop = Auth::user();
+    $order = Order::find($id);
 
-    // Fetch your order with items and shipping/billing info
-    $shopifyOrder = Order::where('user_id', $shop->id)
-                         ->where('id', $id)
-                         ->with('items')
-                         ->first();
+    if (!$order) {
+        return redirect()->back()->with('error', 'Order not found');
+    }
 
-    // Prepare billing and shipping arrays
+    // Billing & shipping from order row
     $billing = [
-        'name' => $shopifyOrder->bill_name ?? '',
-        'address1' => $shopifyOrder->bill_street ?? '',
-        'address2' => $shopifyOrder->bill_street2 ?? '',
-        'city' => $shopifyOrder->bill_city ?? '',
-        'country_code' => $shopifyOrder->bill_country ?? '',
-        'province_code' => $shopifyOrder->bill_state ?? '',
-        'zip' => $shopifyOrder->bill_zipCode ?? '',
-        'phone' => $shopifyOrder->bill_phone ?? '0000000000',
+        'name' => $order->bill_name ?? '',
+        'address1' => $order->bill_street ?? '',
+        'address2' => $order->bill_street2 ?? '',
+        'city' => $order->bill_city ?? '',
+        'country_code' => $order->bill_country ?? '',
+        'province_code' => $order->bill_state ?? '',
+        'zip' => $order->bill_zipCode ?? '',
+        'phone' => $order->bill_phone ?? '0000000000',
     ];
 
     $shipping = [
-        'name' => $shopifyOrder->ship_name ?? '',
-        'address1' => $shopifyOrder->ship_street ?? '',
-        'address2' => $shopifyOrder->ship_street2 ?? '',
-        'city' => $shopifyOrder->ship_city ?? '',
-        'country_code' => $shopifyOrder->ship_country ?? '',
-        'province_code' => $shopifyOrder->ship_state ?? '',
-        'zip' => $shopifyOrder->ship_zipCode ?? '',
-        'phone' => $shopifyOrder->ship_phone ?? '0000000000',
+        'name' => $order->ship_name ?? '',
+        'address1' => $order->ship_street ?? '',
+        'address2' => $order->ship_street2 ?? '',
+        'city' => $order->ship_city ?? '',
+        'country_code' => $order->ship_country ?? '',
+        'province_code' => $order->ship_state ?? '',
+        'zip' => $order->ship_zipCode ?? '',
+        'phone' => $order->ship_phone ?? '0000000000',
     ];
 
-    $shippingCode = $shopifyOrder->shippingtypeName ?? 'Standard';
-    $couponCode = $shopifyOrder->coupon_code ?? '';
+    $rows = json_decode($order->items_json ?? '[]', true); // products JSON stored in table
 
-    // Prepare order items to fetch
-    $rows = $shopifyOrder->items->map(function($item){
-        return [
-            'product_id' => $item->product_id,
-            'title' => $item->title ?? '',
-            'quantity' => $item->quantity,
-            'price' => $item->price,
-            'sku' => $item->sku ?? '',
-        ];
-    })->toArray();
-
-    // Construct payload exactly like your example
     $orderData = [
-        'clientemail' => $shopifyOrder->email ?? '',
-        'clientname' => trim(($shopifyOrder->first_name ?? '') . ' ' . ($shopifyOrder->last_name ?? '')),
-        'orderid' => ltrim($shopifyOrder->name ?? '', '#'),
-        'shippingtypeName' => $shippingCode,
-        'phone' => $shopifyOrder->phone ?? '0000000000',
-        'currency' => $shopifyOrder->currency ?? '',
+        'clientemail' => $order->email ?? '',
+        'clientname' => $order->client_name ?? '',
+        'orderid' => $order->orderid ?? '',
+        'shippingtypeName' => $order->shippingtypeName ?? 'Standard',
+        'phone' => $order->phone ?? '0000000000',
+        'currency' => $order->currency ?? '',
         'bill_name' => $billing['name'],
         'bill_street' => $billing['address1'],
         'bill_street2' => $billing['address2'],
@@ -263,24 +248,23 @@ class OrderController extends Controller
         'ship_state' => $shipping['province_code'],
         'ship_zipCode' => $shipping['zip'],
         'ship_phone' => $shipping['phone'],
-        'Comments' => $shopifyOrder->note ?? '',
-        'TotalPaid' => $shopifyOrder->total_price ?? 0,
-        'payment_method' => $shopifyOrder->payment_gateway_names ?? '',
-        'discount' => $shopifyOrder->total_discounts ?? 0,
-        'date' => Carbon::parse($shopifyOrder->created_at ?? now())->toDateString(),
-        'FromWebsite' => $this->shopDomain ?? '',
-        'BillingType' => $shopifyOrder->payment_gateway_names ?? '',
+        'Comments' => $order->Comments ?? '',
+        'TotalPaid' => $order->TotalPaid ?? 0,
+        'payment_method' => $order->payment_method ?? '',
+        'discount' => $order->discount ?? 0,
+        'date' => Carbon::parse($order->date ?? now())->toDateString(),
+        'FromWebsite' => $order->FromWebsite ?? '',
+        'BillingType' => $order->BillingType ?? '',
         'rows' => $rows,
-        'transactionid' => (string) ($shopifyOrder->id ?? ''),
-        'coupon_code' => $couponCode,
+        'transactionid' => (string) ($order->transactionid ?? ''),
+        'coupon_code' => $order->coupon_code ?? '',
     ];
 
-    // Send POST request
     try {
         $response = Http::withToken('coQFSMG*M3Ra2NKIcqUE32L2d')
                         ->post('http://52.210.3.93/qms-funnel/orders', $orderData);
 
-        if($response->successful()){
+        if ($response->successful()) {
             return redirect()->back()->with('success', 'Order data re-sent successfully!');
         } else {
             return redirect()->back()->with('error', 'Failed to resend order: ' . $response->body());
@@ -289,5 +273,4 @@ class OrderController extends Controller
         return redirect()->back()->with('error', 'Error sending order: ' . $e->getMessage());
     }
 }
-
 }
