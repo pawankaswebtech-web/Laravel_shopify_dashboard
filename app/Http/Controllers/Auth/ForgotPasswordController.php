@@ -18,21 +18,7 @@ class ForgotPasswordController extends Controller
     }
 
     // Send reset link to email
-    public function sendResetLinkEmail(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
-
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
-
-        return $status === Password::RESET_LINK_SENT
-                ? back()->with('success', __($status))
-                : back()->withErrors(['email' => __($status)]);
-    }
-     public function sendResetLink(Request $request)
+      public function sendResetLink(Request $request)
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
@@ -58,17 +44,18 @@ class ForgotPasswordController extends Controller
 
         // Send Mail
        try {
-    Mail::send('emails.reset-password', ['link' => $resetLink], function($message) use ($user) {
-        $message->to($user->email);
-        $message->subject('Reset Your Password');
-    });
+        Mail::send('emails.reset-password', ['link' => $resetLink], function($message) use ($user) {
+            $message->to($user->email);
+            $message->subject('Reset Your Password');
+        });
 
-    return back()->with('success', 'Mail Sent Successfully');
+        return back()->with('success', 'Mail Sent Successfully');
 
-} catch (\Exception $e) {
-    return $e->getMessage();
-}
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
 
         return back()->with('success', 'Reset link sent to your email.');
     }
+   
 }
