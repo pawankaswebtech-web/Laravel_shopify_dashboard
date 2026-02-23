@@ -3,6 +3,7 @@
 <head>
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
 <body class="bg-light">
@@ -26,9 +27,7 @@
                 <input type="email" name="email" class="form-control" required>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" required>
+           
                 <div class="mb-3 position-relative">
                     <label class="form-label">Password</label>
 
@@ -42,7 +41,6 @@
                     id="togglePassword"
                     style="top: 38px; right: 15px; cursor: pointer;"></i>
                 </div>
-            </div>
 
             <button type="submit" class="btn btn-primary w-100">
                 Login
