@@ -199,7 +199,11 @@ class OrderController extends Controller
     // Fetch your order with items and shipping/billing info
     $shopifyOrder = Order::where('user_id', $shop->id)
                          ->where('id', $id)
-                         ->firstOrFail();
+                         ->first();
+                         
+if (!$shopifyOrder) {
+    return redirect()->back()->with('error', 'Order not found for this user.');
+}
 
     // Prepare billing and shipping arrays
     $billing = [
