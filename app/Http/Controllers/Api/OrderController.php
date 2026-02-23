@@ -741,7 +741,7 @@ class OrderController extends Controller
 
 /**
  * @OA\POST(
- *     path="/api/orders/{id}/status",
+ *     path="/api/ordersdetail/orders/{id}/status",
  *     summary="Update order status",
  *     operationId="updateOrderStatus",
  *     tags={"Orders"},

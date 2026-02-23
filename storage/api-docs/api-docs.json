@@ -319,7 +319,7 @@
                 }
             }
         },
-        "/api/orders/{id}/status": {
+        "/api/ordersdetail/orders/{id}/status": {
             "post": {
                 "tags": [
                     "Orders"
