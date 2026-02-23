@@ -25,7 +25,7 @@ class ForgotPasswordController extends Controller
     ]);
 
     $user = User::where('email', $request->email)->first();
-
+    dd($user);
     $token = Str::random(64);
 
     DB::table('password_reset_tokens')->updateOrInsert(
@@ -38,7 +38,7 @@ class ForgotPasswordController extends Controller
     );
 
     $resetLink = url('/reset-password/'.$token.'?email='.$user->email);
-    dd($resetLink);
+
 
     try {
         Mail::send('emails.reset-password', ['link' => $resetLink], function($message) use ($user) {
