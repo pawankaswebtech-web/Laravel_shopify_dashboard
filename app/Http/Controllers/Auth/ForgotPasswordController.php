@@ -38,6 +38,7 @@ class ForgotPasswordController extends Controller
     );
 
     $resetLink = url('/reset-password/'.$token.'?email='.$user->email);
+    dd($resetLink);
 
     try {
         Mail::send('emails.reset-password', ['link' => $resetLink], function($message) use ($user) {
