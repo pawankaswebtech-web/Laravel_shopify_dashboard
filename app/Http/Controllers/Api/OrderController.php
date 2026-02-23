@@ -741,7 +741,7 @@ class OrderController extends Controller
 
     /**
  * @OA\PUT(
- *     path="/api/ordersdetail/orderstatus",
+ *     path="/api/orders/{id}/status",
  *     summary="Update order status",
  *     description="Update order status by order id",
  *     operationId="updateOrderStatus",

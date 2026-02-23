@@ -317,7 +317,9 @@
                         "description": "Validation error"
                     }
                 }
-            },
+            }
+        },
+        "/api/orders/{id}/status": {
             "put": {
                 "tags": [
                     "Orders"

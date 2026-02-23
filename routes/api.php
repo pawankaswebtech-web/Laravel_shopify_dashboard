@@ -27,7 +27,7 @@ Route::prefix('ordersdetail')->name('api.orders.')->group(function () {
     Route::any('/orderprefix/{orderId}', [OrderController::class, 'showOrderPrefix'])->name('showOrderPrefix');
     Route::any('/orderid/{Id}', [OrderController::class, 'showOrderId'])->name('showOrderId');
     Route::get('/orderstatus', [OrderController::class, 'getOrdersByStatus'])->name('getOrdersByStatus');
-    Route::put('/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])->name('updateOrderStatus');
+    Route::post('/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])->name('updateOrderStatus');
   
 });
 
