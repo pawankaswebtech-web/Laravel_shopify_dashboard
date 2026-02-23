@@ -23,9 +23,8 @@ class ForgotPasswordController extends Controller
     $request->validate([
         'email' => 'required|email|exists:users,email',
     ]);
-
     $user = User::where('email', $request->email)->first();
-    dd($user);
+   
     $token = Str::random(64);
 
     DB::table('password_reset_tokens')->updateOrInsert(
@@ -41,10 +40,10 @@ class ForgotPasswordController extends Controller
 
 
     try {
-        Mail::send('emails.reset-password', ['link' => $resetLink], function($message) use ($user) {
-            $message->to($user->email);
-            $message->subject('Reset Your Password');
-        });
+      Mail::send('emails.reset-password', ['link' => $resetLink], function($message) use ($user) {
+        $message->to($user->email);
+        $message->subject('Reset Your Password');
+    });
 
         return back()->with('success', 'Mail Sent Successfully');
 
