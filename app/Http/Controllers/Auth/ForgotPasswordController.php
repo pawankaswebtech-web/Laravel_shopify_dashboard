@@ -75,7 +75,7 @@ public function resetPassword(Request $request)
         ->where('email', $request->email)
         ->delete();
 
-    return redirect('/login')->with('success', 'Password reset successfully');
+  return back()->with('success', 'Password reset successfully');
 }
    
 }
