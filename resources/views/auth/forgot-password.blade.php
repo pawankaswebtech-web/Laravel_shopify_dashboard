@@ -11,7 +11,6 @@
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
-
         <div class="mb-3">
             <label>Email</label>
             <input type="email" name="email" class="form-control" required>
