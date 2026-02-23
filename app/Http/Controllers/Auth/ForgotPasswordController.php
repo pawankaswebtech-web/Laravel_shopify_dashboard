@@ -18,32 +18,28 @@ class ForgotPasswordController extends Controller
     }
 
     // Send reset link to email
-      public function sendResetLinkEmail(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
+    public function sendResetLinkEmail(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email|exists:users,email',
+    ]);
 
-        $user = User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
 
-        // Generate token
-        $token = Str::random(64);
+    $token = Str::random(64);
 
-        // Save token in password_reset_tokens table
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $user->email],
-            [
-                'email' => $user->email,
-                'token' => bcrypt($token),
-                'created_at' => now()
-            ]
-        );
+    DB::table('password_reset_tokens')->updateOrInsert(
+        ['email' => $user->email],
+        [
+            'email' => $user->email,
+            'token' => $token, // ✅ NO bcrypt here
+            'created_at' => now()
+        ]
+    );
 
-        // Create reset link
-        $resetLink = url('/reset-password/'.$token.'?email='.$user->email);
+    $resetLink = url('/reset-password/'.$token.'?email='.$user->email);
 
-        // Send Mail
-       try {
+    try {
         Mail::send('emails.reset-password', ['link' => $resetLink], function($message) use ($user) {
             $message->to($user->email);
             $message->subject('Reset Your Password');
@@ -54,8 +50,32 @@ class ForgotPasswordController extends Controller
     } catch (\Exception $e) {
         return $e->getMessage();
     }
+}
+public function resetPassword(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email|exists:users,email',
+        'password' => 'required|min:6|confirmed',
+        'token' => 'required'
+    ]);
 
-        return back()->with('success', 'Reset link sent to your email.');
+    $record = DB::table('password_reset_tokens')
+        ->where('email', $request->email)
+        ->where('token', $request->token)
+        ->first();
+
+    if (!$record) {
+        return back()->withErrors(['email' => 'Invalid token']);
     }
+
+    User::where('email', $request->email)
+        ->update(['password' => bcrypt($request->password)]);
+
+    DB::table('password_reset_tokens')
+        ->where('email', $request->email)
+        ->delete();
+
+    return redirect('/login')->with('success', 'Password reset successfully');
+}
    
 }
