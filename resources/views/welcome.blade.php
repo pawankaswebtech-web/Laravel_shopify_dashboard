@@ -103,7 +103,10 @@
     </div>
 @endsection
 <script>
-    document.getElementById('resendButton').addEventListener('click', () => {
-  console.log('Resending data:', formData); 
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('resendButton');
+    btn.addEventListener('click', () => {
+        console.log('Resending data:', formData); 
+    });
 });
 </script>
