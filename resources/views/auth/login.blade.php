@@ -45,11 +45,11 @@
             <button type="submit" class="btn btn-primary w-100">
                 Login
             </button>
-            <div class="text-center mt-3">
-                <a href="{{ route('password.request') }}">
-                    Forgot Password?
-                </a>
-            </div>
+           <div class="text-center mt-3">
+    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+        Forgot Password?
+    </a>
+</div>
             <!-- Forgot Password Modal -->
 <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
   <div class="modal-dialog">
