@@ -37,8 +37,9 @@ Route::middleware(['verify.shopify'])->group(function () {
 });
  Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/dashboard', function () { return view('dashboard');})->middleware('auth')->name('dashboard');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    
+
  Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
 Route::post('/orders/{id}/resend-data', [OrderController::class, 'resendOrderData'])->name('orders.resend-data');
 Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
