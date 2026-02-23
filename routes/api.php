@@ -21,6 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Webhook for internal system updates (Unauthenticated)
 // Route::post('/webhook/order-update', [OrdersController::class, 'webhookUpdateStatus'])->name('api.webhook.order.update');
+
+
+
 Route::prefix('ordersdetail')->name('api.orders.')->group(function () {
     Route::post('/', [OrderController::class, 'index'])->name('index');
     Route::any('storeid/{storeid}', [OrderController::class, 'show'])->name('show');
@@ -30,5 +33,3 @@ Route::prefix('ordersdetail')->name('api.orders.')->group(function () {
     Route::post('/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])->name('updateOrderStatus');
   
 });
-
-
