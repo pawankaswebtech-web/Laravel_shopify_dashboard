@@ -40,12 +40,12 @@ Route::middleware(['verify.shopify'])->group(function () {
  Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-    ->name('password.request');
-    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+       Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
         ->name('password.email');
-        Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])
-    ->name('password.update');
+    // Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    // ->name('password.request');
+    //     Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])
+    // ->name('password.update');
 
   Route::middleware('auth')->group(function () {
 
@@ -58,16 +58,16 @@ Route::middleware(['verify.shopify'])->group(function () {
     // Route::get('/logs', [DashboardController::class, 'logs'])
     //     ->name('logs');
 
-    Route::get('/swagger', [DashboardController::class, 'swagger'])
-        ->name('swagger');
+    Route::get('/swagger', [DashboardController::class, 'swagger'])->name('swagger');
+    Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
+    Route::post('/orders/{id}/resend-data', [OrderController::class, 'resendOrderData'])->name('orders.resend-data');
+    Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
+    Route::get('/order-details-view/{userId}', [OrderController::class, 'orderDetailView'])->name('orders.detailview');
+    Route::get('/order-manage-status/{shopOrderId}/status', [OrderController::class, 'showOrderStatusForm'])->name('orders.status');
+    Route::post('/order-manage-status/{shopOrderId}/status', [OrderController::class, 'OrderStatus'])->name('orders.status.update');
+
+    // Webhook for internal system updates (Unauthenticated)
+    Route::post('/order/order-updates', [OrderController::class, 'webhookUpdateStatus'])->name('webhook.order.update');
 });
 
- Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
-Route::post('/orders/{id}/resend-data', [OrderController::class, 'resendOrderData'])->name('orders.resend-data');
-Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
-Route::get('/order-details-view/{userId}', [OrderController::class, 'orderDetailView'])->name('orders.detailview');
-Route::get('/order-manage-status/{shopOrderId}/status', [OrderController::class, 'showOrderStatusForm'])->name('orders.status');
-Route::post('/order-manage-status/{shopOrderId}/status', [OrderController::class, 'OrderStatus'])->name('orders.status.update');
-
-// Webhook for internal system updates (Unauthenticated)
-Route::post('/order/order-updates', [OrderController::class, 'webhookUpdateStatus'])->name('webhook.order.update');
+ 

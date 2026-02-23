@@ -46,9 +46,37 @@
                 Login
             </button>
             <div class="text-center mt-3">
-    <a href="{{ route('password.request') }}">
-        Forgot Password?
-    </a>
+                <a href="{{ route('password.request') }}">
+                    Forgot Password?
+                </a>
+            </div>
+            <!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title">Forgot Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form method="POST" action="{{ route('password.email') }}">
+            @csrf
+            
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Send Reset Link
+            </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
 </div>
         </form>
 
