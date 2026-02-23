@@ -15,13 +15,7 @@
             </div>
             <ui-title-bar title="Dashboard"></ui-title-bar>
         </div>
-
-        <div
-            style="background: #fff; border-radius: 8px; box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 3px 0 rgba(63, 63, 68, 0.15);">
-            <div style="padding: 16px; border-bottom: 1px solid #e1e3e5;">
-                <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Recent Orders</h2>
-            </div>
-            @if(session('success'))
+     @if(session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
     </div>
@@ -32,6 +26,12 @@
         {{ session('error') }}
     </div>
 @endif
+        <div
+            style="background: #fff; border-radius: 8px; box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 3px 0 rgba(63, 63, 68, 0.15);">
+            <div style="padding: 16px; border-bottom: 1px solid #e1e3e5;">
+                <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Recent Orders</h2>
+            </div>
+       
 
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
