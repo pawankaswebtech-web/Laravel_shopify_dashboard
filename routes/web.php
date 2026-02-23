@@ -27,17 +27,18 @@ use App\Http\Controllers\Auth\LoginController;
 Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/', [OrderController::class, 'HomeRoute'])->name('home');
 
-    Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     
+
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/api/orders', [OrderController::class, 'fetchOrders'])->name('orders.fetch');
     Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update');
   
 
 });
- 
+ Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    
  Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
 Route::post('/orders/{id}/resend-data', [OrderController::class, 'resendOrderData'])->name('orders.resend-data');
 Route::get('/order-details', [OrderController::class, 'orderDetail'])->name('orders.orderdetails');
