@@ -21,12 +21,18 @@
             <div style="padding: 16px; border-bottom: 1px solid #e1e3e5;">
                 <h2 style="font-size: 16px; font-weight: 600; margin: 0;">Recent Orders</h2>
             </div>
-
-            @if(session('resend_status'))
-    <div style="color: green; margin-bottom: 10px;">
-        {{ session('resend_status') }}
+            @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
     </div>
 @endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
                     <thead>
@@ -67,12 +73,10 @@
                                     </a>
                                 </td>
                                 <td style="padding: 12px 16px; text-align: center;">
-                                   @foreach($orders as $order)
-                                        <form method="POST" action="{{ route('orders.resend-data', ['id' => $order->id]) }}">
-                                            @csrf
-                                            <button type="submit" class="btn btn-warning"  style="display: inline-block; padding: 6px 12px; border: 1px solid #c9cccf; border-radius: 4px; color: #202223; text-decoration: none; font-size: 13px; font-weight: 500; background: #fff; transition: background-color 0.2s;">Resend Order</button>
-                                        </form>
-                                    @endforeach
+                                   <form method="POST" action="{{ route('orders.resend-data', ['id' => $order->id]) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-warning" style="display: inline-block; padding: 6px 12px; border: 1px solid #c9cccf; border-radius: 4px; color: #202223; text-decoration: none; font-size: 13px; font-weight: 500; background: #fff; transition: background-color 0.2s;">Resend Order</button>
+                                    </form>
                                 </td>
                             </tr>
                         @empty
