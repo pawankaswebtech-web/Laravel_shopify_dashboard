@@ -24,7 +24,6 @@ class ForgotPasswordController extends Controller
         'email' => 'required|email|exists:users,email',
     ]);
     $user = User::where('email', $request->email)->first();
-   dd($user);
     $token = Str::random(64);
 
     DB::table('password_reset_tokens')->updateOrInsert(

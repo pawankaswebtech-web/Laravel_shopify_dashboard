@@ -18,7 +18,7 @@
         </a> -->
 
         <a href="{{ route('swagger') }}" class="list-group-item list-group-item-action">
-            📘 Swagger
+            📘 Swaggers
         </a>
     </div>
 </div>
