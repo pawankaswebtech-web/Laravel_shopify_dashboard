@@ -320,27 +320,33 @@
             }
         },
         "/api/orders/{id}/status": {
-            "put": {
+            "post": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Update order status",
-                "description": "Update order status by order id",
                 "operationId": "updateOrderStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "order_id",
                                     "status"
                                 ],
                                 "properties": {
-                                    "order_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
                                     "status": {
                                         "type": "string",
                                         "enum": [

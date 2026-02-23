@@ -739,19 +739,25 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
- * @OA\PUT(
+/**
+ * @OA\POST(
  *     path="/api/orders/{id}/status",
  *     summary="Update order status",
- *     description="Update order status by order id",
  *     operationId="updateOrderStatus",
  *     tags={"Orders"},
+ *
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="Order ID",
+ *         @OA\Schema(type="integer", example=10)
+ *     ),
  *
  *     @OA\RequestBody(
  *         required=true,
  *         @OA\JsonContent(
- *             required={"order_id","status"},
- *             @OA\Property(property="order_id", type="integer", example=1),
+ *             required={"status"},
  *             @OA\Property(
  *                 property="status",
  *                 type="string",
@@ -761,48 +767,38 @@ class OrderController extends Controller
  *         )
  *     ),
  *
- *     @OA\Response(
- *         response=200,
- *         description="Order status updated successfully"
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="Order not found"
- *     ),
- *     @OA\Response(
- *         response=422,
- *         description="Validation error"
- *     )
+ *     @OA\Response(response=200, description="Order status updated successfully"),
+ *     @OA\Response(response=404, description="Order not found"),
+ *     @OA\Response(response=422, description="Validation error")
  * )
  */
-    public function updateOrderStatus(Request $request)
-    {
-        $request->validate([
-            'order_id' => 'required|exists:orders,id',
-            'status'   => 'required|in:paid,pending'
-        ]);
+   public function updateOrderStatus(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:paid,pending'
+    ]);
 
-        $order = Order::find($request->order_id);
+    $order = Order::find($id);
 
-        if (!$order) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Order not found'
-            ], 404);
-        }
-
-        $order->order_status = $request->status;
-        $order->save();
-
+    if (!$order) {
         return response()->json([
-            'success' => true,
-            'message' => 'Order status updated successfully',
-            'order'   => [
-                'id' => $order->id,
-                'order_status' => $order->order_status
-            ]
-        ]);
+            'success' => false,
+            'message' => 'Order not found'
+        ], 404);
     }
+
+    $order->order_status = $request->status;
+    $order->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Order status updated successfully',
+        'order' => [
+            'id' => $order->id,
+            'order_status' => $order->order_status
+        ]
+    ]);
+}
 
 
    
