@@ -9,13 +9,13 @@
     <h3>Dashboard</h3>
 
     <div class="list-group mt-4">
-        <a href="{{ route('stores') }}" class="list-group-item list-group-item-action">
+        <!-- <a href="{{ route('stores') }}" class="list-group-item list-group-item-action">
             🏬 Stores
         </a>
 
         <a href="{{ route('logs') }}" class="list-group-item list-group-item-action">
-            📜 Log
-        </a>
+            📜 Logs
+        </a> -->
 
         <a href="{{ route('swagger') }}" class="list-group-item list-group-item-action">
             📘 Swagger

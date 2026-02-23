@@ -52,11 +52,11 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    Route::get('/stores', [DashboardController::class, 'stores'])
-        ->name('stores');
+    // Route::get('/stores', [DashboardController::class, 'stores'])
+    //     ->name('stores');
 
-    Route::get('/logs', [DashboardController::class, 'logs'])
-        ->name('logs');
+    // Route::get('/logs', [DashboardController::class, 'logs'])
+    //     ->name('logs');
 
     Route::get('/swagger', [DashboardController::class, 'swagger'])
         ->name('swagger');
