@@ -264,16 +264,12 @@ public function resendOrderData($id)
         $response = Http::withToken('coQFSMG*M3Ra2NKIcqUE32L2d')
                         ->post('http://52.210.3.93/qms-funnel/orders', $orderData);
 
-        if ($response->successful()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Order data re-sent successfully!'
-            ]);
+         if ($response->successful()) {
+            return redirect()->back()
+                ->with('resend_status', 'Order data resend successfully!');
         } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to resend order: ' . $response->body()
-            ]);
+            return redirect()->back()
+                ->with('resend_status', 'Failed to resend order');
         }
         
         }catch (\Exception $e) {
