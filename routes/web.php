@@ -27,6 +27,10 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 //     }
 //     return view('landing');
 // })->name('landing');
+Route::get('/swaggeres', function () {
+    return redirect('/api/documentation');
+})->name('swaggeres');
+
 
 Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/home', [OrderController::class, 'HomeRoute'])->name('home');
@@ -76,3 +80,9 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
 });
 
  
+git init
+git add .
+git commit -m "Laravel project initial commit"
+git branch -M main
+git remote add origin https://github.com/pawankaswebtech-web/Laravel_shopify_dashboard.git
+git push -u origin main

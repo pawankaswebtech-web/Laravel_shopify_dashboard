@@ -39,7 +39,7 @@ return new class extends Migration {
             $table->string('ship_phone')->nullable();
             $table->text('Comments')->nullable();
             $table->decimal('TotalPaid', 10, 2)->nullable();
-            $table->string('FromWebsite ')->default('Shopify');
+            $table->string('FromWebsite')->default('Shopify');
             $table->string('BillingType')->nullable();
             $table->string('transactionid')->nullable();
             $table->string('order_status')->default('pending');
