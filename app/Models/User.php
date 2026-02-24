@@ -11,22 +11,36 @@ use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use Osiset\ShopifyApp\Traits\ShopModel;
 class User extends Authenticatable implements IShopModel
 {
-    use HasApiTokens, HasFactory, Notifiable, ShopModel;
+    use HasApiTokens, HasFactory, Notifiable,ShopModel;
 
-    protected $table = 'login_users';
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        //'password' => 'hashed',
     ];
 }

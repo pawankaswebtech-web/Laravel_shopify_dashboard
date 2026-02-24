@@ -1,7 +1,6 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
-use App\Models\User;
+use App\Models\LoginUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +19,7 @@ class LoginController extends Controller
         'password' => 'required'
     ]);
 
-    $user = User::where('email', $request->email)->first();
+    $user = LoginUser::where('email', $request->email)->first();
 
     if (!$user) {
         return back()->withErrors(['email' => 'User not found']);

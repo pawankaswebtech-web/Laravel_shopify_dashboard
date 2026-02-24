@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\DashboardController;
 /*
@@ -38,6 +39,9 @@ Route::middleware(['verify.shopify'])->group(function () {
 
 });
  Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
+ Route::get('/register', [RegisterController::class,'showRegister'])->name('register');
+
+Route::post('/register', [RegisterController::class,'register']);
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
        Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
