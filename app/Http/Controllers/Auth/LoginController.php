@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Auth;
 use App\Models\LoginUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -25,16 +26,14 @@ class LoginController extends Controller
         return back()->withErrors(['email' => 'User not found']);
     }
 
-    // Direct password match (no bcrypt)
-    if ($request->password === $user->password) {
-        
-        Auth::login($user);   // manually login user
-        $request->session()->regenerate();
-
-        return redirect()->route('dashboard');
+    if (!Hash::check($request->password, $user->password)) {
+        return back()->withErrors(['password' => 'Incorrect password']);
     }
 
-    return back()->withErrors(['password' => 'Incorrect password']);
+    Auth::login($user);
+    $request->session()->regenerate();
+
+    return redirect()->route('dashboard');
 }
 
     public function logout(Request $request)

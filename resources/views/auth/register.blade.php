@@ -36,7 +36,7 @@
             </button>
              <div class="text-center mt-2">
                 <span>Already have an account?</span>
-                <a href="{{ route('/') }}">Login here</a>
+                <a href="{{ route('login.form') }}">Login here</a>
             </div>
         </form>
     </div>
