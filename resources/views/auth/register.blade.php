@@ -20,7 +20,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ url('/register') }}">
+        <form method="POST" action="{{ route('register') }}">
             @csrf
 
             <input type="text" name="name" placeholder="Name" class="form-control" required>
