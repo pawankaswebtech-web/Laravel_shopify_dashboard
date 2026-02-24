@@ -27,7 +27,19 @@
 
             <input type="email" name="email" placeholder="Email" class="form-control mt-2" required>
 
-            <input type="password" name="password" placeholder="Password" class="form-control mt-2" required>
+           <div class="mb-3 position-relative">
+                <label class="form-label">Password</label>
+
+                <input type="password" 
+                    name="password" 
+                    id="password"
+                    class="form-control pe-5"
+                    required>
+
+                <i class="bi bi-eye-slash position-absolute"
+                id="togglePassword"
+                style="top: 38px; right: 15px; cursor: pointer;"></i>
+            </div>
 
             <input type="password" name="password_confirmation" placeholder="Confirm Password" class="form-control mt-2" required>
 
@@ -41,7 +53,22 @@
         </form>
     </div>
 </div>
+<script>
+document.getElementById("togglePassword").addEventListener("click", function () {
+    const password = document.getElementById("password");
+    const icon = this;
 
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    } else {
+        password.type = "password";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    }
+});
+</script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
