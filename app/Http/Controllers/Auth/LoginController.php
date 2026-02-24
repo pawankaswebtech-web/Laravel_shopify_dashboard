@@ -30,10 +30,12 @@ class LoginController extends Controller
         return back()->withErrors(['password' => 'Incorrect password']);
     }
 
-    Auth::login($user);
+   Auth::login($user);
     $request->session()->regenerate();
 
-   return redirect()->route('dashboard')->with('success','login successful!');
+    session()->flash('success', 'Login successful!');
+
+    return view('dashboard');
 }
 
     public function logout(Request $request)

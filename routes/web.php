@@ -47,10 +47,7 @@ Route::middleware(['verify.shopify'])->group(function () {
 
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
     ->name('password.email');
-    // Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-    // ->name('password.request');
-    //     Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])
-    // ->name('password.update');
+    
 
   Route::middleware('auth')->group(function () {
 
