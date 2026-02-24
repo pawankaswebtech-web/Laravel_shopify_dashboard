@@ -7,6 +7,9 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\WebhookController;
+use App\Models\WebhookLog;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,8 +49,8 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/register', [RegisterController::class,'showRegister'])->name('register');
     Route::post('/register', [RegisterController::class,'register']);
 
-   Route::get('/', [LoginController::class, 'showLogin'])->name('login.form');
-    Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+   Route::get('/login', [LoginController::class, 'showLogin'])->name('login.form');
+    Route::post('/', [LoginController::class, 'login'])->name('login.submit');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
@@ -63,9 +66,16 @@ Route::get('/reset-password/{token}', function ($token) {
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('password.update');
     
-
+ Route::get('/dashboard/logs', [DashboardController::class, 'showLogs'])->name('logs.index');
   Route::middleware('auth')->group(function () {
 
+
+     
+        Route::delete('/dashboard/webhooks/delete-all', function () {
+            WebhookLog::truncate(); // deletes all records
+            return redirect('/dashboard/webhooks')->with('success', 'All logs deleted successfully.');
+        })->name('logs.deleteAll');
+    Route::post('/webhook', [WebhookController::class, 'handle']);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/swagger', [DashboardController::class, 'swagger'])->name('swagger');
     Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');

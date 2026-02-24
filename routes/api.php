@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\OrderController;
-
+use App\Http\Controllers\WebhookController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::post('/webhook/order-update', [OrdersController::class, 'webhookUpdateStatus'])->name('api.webhook.order.update');
 
 
+
+Route::post('/webhook', [WebhookController::class, 'handle']);
 
 Route::prefix('ordersdetail') ->middleware(['auth:sanctum']) ->name('api.orders.') ->group(function () {
         Route::post('/index', [OrderController::class, 'index'])->name('index');

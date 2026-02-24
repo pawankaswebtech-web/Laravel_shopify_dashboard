@@ -10,10 +10,17 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>🧾 Shopify Logs</h4>
-
+<div>
+        <!-- Back Button -->
+        <a href="#" class="btn btn-secondary btn-sm">
+            ← Back
+        </a>
+       
+    </div>
         <form method="POST" action="{{ route('logs.deleteAll') }}"
               onsubmit="return confirm('Are you sure you want to delete all Shopify logs?');">
             @csrf
+            @method('DELETE')
             <button class="btn btn-danger btn-sm">
                 🗑️ Delete All Logs
             </button>
@@ -46,7 +53,7 @@
                                 </span>
                             </td>
                             <td>{{ $log->shop_domain ?? '-' }}</td>
-                            <td>{{ $log->message }}</td>
+                            <td><pre>{{ json_encode($log->payload, JSON_PRETTY_PRINT) }}</pre></td>
                             <td>{{ $log->created_at->format('d M Y H:i') }}</td>
                         </tr>
                     @empty

@@ -84,11 +84,13 @@
         </div>
 
         <div class="col-md-3">
+            <a href="{{ route('logs.index') }}" class="text-decoration-none text-dark">
             <div class="card dashboard-card p-4">
                 <div class="icon-box text-danger mb-2">🧾</div>
                 <h5>Logs</h5>
                 <p class="text-muted small">System Logs</p>
             </div>
+            </a>
         </div>
 
     </div>
