@@ -28,7 +28,7 @@ use App\Http\Controllers\DashboardController;
 // })->name('landing');
 
 Route::middleware(['verify.shopify'])->group(function () {
-    Route::get('/', [OrderController::class, 'HomeRoute'])->name('home');
+    Route::get('/home', [OrderController::class, 'HomeRoute'])->name('home');
 
     
 
@@ -38,14 +38,15 @@ Route::middleware(['verify.shopify'])->group(function () {
   
 
 });
- Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
- Route::get('/register', [RegisterController::class,'showRegister'])->name('register');
+    Route::get('/register', [RegisterController::class,'showRegister'])->name('register');
+    Route::post('/register', [RegisterController::class,'register']);
 
-Route::post('/register', [RegisterController::class,'register']);
+    Route::get('/', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-       Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-        ->name('password.email');
+
+    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
     // Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
     // ->name('password.request');
     //     Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])
