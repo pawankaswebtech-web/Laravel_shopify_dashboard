@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,6 +48,17 @@ Route::middleware(['verify.shopify'])->group(function () {
 
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
     ->name('password.email');
+
+   // Token wala URL login pe redirect karo
+Route::get('/reset-password/{token}', function ($token) {
+    return redirect()->route('login', [
+        'token' => $token,
+        'email' => request()->get('email')
+    ]);
+})->name('password.reset');
+
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');
     
 
   Route::middleware('auth')->group(function () {
