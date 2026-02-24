@@ -25,12 +25,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::prefix('ordersdetail') ->middleware(['auth:sanctum']) ->name('api.orders.') ->group(function () {
-
         Route::post('/index', [OrderController::class, 'index'])->name('index');
         Route::any('storeid/{storeid}', [OrderController::class, 'show'])->name('show');
         Route::any('/orderprefix/{orderId}', [OrderController::class, 'showOrderPrefix'])->name('showOrderPrefix');
         Route::any('/orderid/{Id}', [OrderController::class, 'showOrderId'])->name('showOrderId');
         Route::get('/orderstatus', [OrderController::class, 'getOrdersByStatus'])->name('getOrdersByStatus');
         Route::post('/orders/{id}/status', [OrderController::class, 'updateOrderStatus'])->name('updateOrderStatus');
-
 });

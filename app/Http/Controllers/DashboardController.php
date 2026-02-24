@@ -11,6 +11,6 @@ public function index()
 
 public function swagger()
 {
-    return redirect('/api/documentation');
+    return view('/api/documentation');
 }
 }

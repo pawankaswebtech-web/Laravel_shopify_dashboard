@@ -49,7 +49,6 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
     ->name('password.email');
 
-   // Token wala URL login pe redirect karo
 Route::get('/reset-password/{token}', function ($token) {
     return redirect()->route('login', [
         'token' => $token,
@@ -63,15 +62,7 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
 
   Route::middleware('auth')->group(function () {
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-
-    // Route::get('/stores', [DashboardController::class, 'stores'])
-    //     ->name('stores');
-
-    // Route::get('/logs', [DashboardController::class, 'logs'])
-    //     ->name('logs');
-
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/swagger', [DashboardController::class, 'swagger'])->name('swagger');
     Route::get('/orders/{id}/download-json', [OrderController::class, 'downloadJson'])->name('orders.download.json');
     Route::post('/orders/{id}/resend-data', [OrderController::class, 'resendOrderData'])->name('orders.resend-data');
