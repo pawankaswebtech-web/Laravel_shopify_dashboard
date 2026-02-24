@@ -40,8 +40,21 @@
                 id="togglePassword"
                 style="top: 38px; right: 15px; cursor: pointer;"></i>
             </div>
+           <div class="mb-3 position-relative">
+                <label class="form-label">Password</label>
 
-            <input type="password" name="password_confirmation" placeholder="Confirm Password" class="form-control mt-2" required>
+                <input type="password" 
+                    name="password_confirmation" 
+                    id="password"
+                    class="form-control pe-5"
+                    placeholder="Confirm Password"
+                    required>
+
+                <i class="bi bi-eye-slash position-absolute"
+                id="togglePassword"
+                style="top: 38px; right: 15px; cursor: pointer;"></i>
+            </div>
+
 
             <button class="btn btn-primary mt-3 w-100">
                 Register
