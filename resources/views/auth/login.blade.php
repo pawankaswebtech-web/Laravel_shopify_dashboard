@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +10,7 @@
 <body class="bg-light">
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card shadow p-4" style="width:400px;">
+    <div class="card shadow p-4" style="width:500px;">
         
         <h3 class="text-center mb-4">Login</h3>
 
@@ -19,7 +20,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login.submit') }}">
             @csrf
 
             <div class="mb-3">
@@ -27,57 +28,38 @@
                 <input type="email" name="email" class="form-control" required>
             </div>
 
-           
-                <div class="mb-3 position-relative">
-                    <label class="form-label">Password</label>
+            <div class="mb-3 position-relative">
+                <label class="form-label">Password</label>
 
-                    <input type="password" 
-                        name="password" 
-                        id="password"
-                        class="form-control pe-5"
-                        required>
+                <input type="password" 
+                    name="password" 
+                    id="password"
+                    class="form-control pe-5"
+                    required>
 
-                    <i class="bi bi-eye-slash position-absolute"
-                    id="togglePassword"
-                    style="top: 38px; right: 15px; cursor: pointer;"></i>
-                </div>
+                <i class="bi bi-eye-slash position-absolute"
+                id="togglePassword"
+                style="top: 38px; right: 15px; cursor: pointer;"></i>
+            </div>
 
             <button type="submit" class="btn btn-primary w-100">
                 Login
             </button>
-           <div class="text-center mt-3">
-    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
-        Forgot Password?
-    </a>
-</div>
-            <!-- Forgot Password Modal -->
-<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      
-      <div class="modal-header">
-        <h5 class="modal-title">Forgot Password</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
 
-      <div class="modal-body">
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
-            
-            <div class="mb-3">
-                <label class="form-label">Email Address</label>
-                <input type="email" name="email" class="form-control" required>
+            <!-- Forgot Password -->
+            <div class="text-center mt-3">
+                <a href="javascript:void(0);" 
+                   data-bs-toggle="modal" 
+                   data-bs-target="#forgotPasswordModal">
+                    Forgot Password?
+                </a>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">
-                Send Reset Link
-            </button>
-        </form>
-      </div>
+            <div class="text-center mt-2">
+                <span>Don't have an account?</span>
+                <a href="{{ route('register') }}">Register here</a>
+            </div>
 
-    </div>
-  </div>
-</div>
         </form>
 
     </div>
@@ -99,6 +81,8 @@ document.getElementById("togglePassword").addEventListener("click", function () 
     }
 });
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

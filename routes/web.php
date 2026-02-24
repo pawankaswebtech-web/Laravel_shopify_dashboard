@@ -41,8 +41,8 @@ Route::middleware(['verify.shopify'])->group(function () {
     Route::get('/register', [RegisterController::class,'showRegister'])->name('register');
     Route::post('/register', [RegisterController::class,'register']);
 
-    Route::get('/', [LoginController::class, 'showLogin'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+   Route::get('/', [LoginController::class, 'showLogin'])->name('login.form');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
