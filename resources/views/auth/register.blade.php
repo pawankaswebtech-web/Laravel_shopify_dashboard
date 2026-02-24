@@ -34,9 +34,9 @@
 
         <form method="POST" action="{{ route('register') }}">
             @csrf
-
+            <label class="form-label">Name</label>
             <input type="text" name="name" placeholder="Name" class="form-control" required>
-
+            <label class="form-label">Email</label>
             <input type="email" name="email" placeholder="Email" class="form-control mt-2" required>
 
            <div class="mb-3 position-relative">
@@ -49,7 +49,7 @@
                     required>
 
                 <i class="bi bi-eye-slash position-absolute"
-                id="togglePassword"
+                class="togglePassword"
                 style="top: 38px; right: 15px; cursor: pointer;"></i>
             </div>
            <div class="mb-3 position-relative">
@@ -63,7 +63,7 @@
                     required>
 
                 <i class="bi bi-eye-slash position-absolute"
-                id="togglePassword"
+                class="togglePassword"
                 style="top: 38px; right: 15px; cursor: pointer;"></i>
             </div>
 
@@ -79,8 +79,8 @@
     </div>
 </div>
 <script>
-document.getElementById("togglePassword").addEventListener("click", function () {
-    const password = document.getElementById("password");
+document.getElementsByClassName("togglePassword").addEventListener("click", function () {
+    const password = document.getElementsByClassName("password");
     const icon = this;
 
     if (password.type === "password") {
