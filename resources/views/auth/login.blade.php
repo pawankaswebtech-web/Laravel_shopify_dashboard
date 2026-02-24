@@ -25,7 +25,8 @@
         </div>
         @endif
 
-        @if ($errors->any())
+        {{-- Login errors sirf dikho jab token na ho --}}
+        @if ($errors->any() && !request()->has('token'))
         <div class="alert alert-danger">
             {{ $errors->first() }}
         </div>
@@ -39,25 +40,21 @@
                 <input type="email" name="email" class="form-control" required>
             </div>
 
-           
             <div class="mb-3 position-relative">
                 <label class="form-label">Password</label>
-
                 <input type="password" 
                     name="password" 
                     id="password"
                     class="form-control pe-5"
                     required>
-
                 <i class="bi bi-eye-slash position-absolute"
                 id="togglePassword"
                 style="top: 38px; right: 15px; cursor: pointer;"></i>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">
-                Login
-            </button>
-           <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+
+            <div class="text-center mt-3">
                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
                     Forgot Password?
                 </a>
@@ -66,13 +63,12 @@
                 <span>Don't have an account?</span>
                 <a href="{{ route('register') }}">Register here</a>
             </div>
-            <!-- Forgot Password Modal -->
-           
         </form>
 
     </div>
 </div>
- {{-- ===================== --}}
+
+{{-- ===================== --}}
 {{-- FORGOT PASSWORD MODAL --}}
 {{-- ===================== --}}
 <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
@@ -90,7 +86,7 @@
                     <div class="alert alert-success">{{ session('status') }}</div>
                 @endif
 
-                @if ($errors->has('email'))
+                @if ($errors->has('email') && !request()->has('token'))
                     <div class="alert alert-danger">{{ $errors->first('email') }}</div>
                 @endif
 
@@ -131,8 +127,6 @@
 
                 <form method="POST" action="{{ route('password.update') }}">
                     @csrf
-
-                    {{-- Hidden fields --}}
                     <input type="hidden" name="token" value="{{ request()->get('token') }}">
                     <input type="hidden" name="email" value="{{ request()->get('email') }}">
 
@@ -159,18 +153,38 @@
 </div>
 @endif
 
+{{-- Hidden flags for JS --}}
+<input type="hidden" id="hasEmailError" value="{{ $errors->has('email') && !request()->has('token') ? '1' : '0' }}">
+<input type="hidden" id="hasToken" value="{{ request()->has('token') ? '1' : '0' }}">
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- <script>
-    // Forgot modal auto open on error
-    @if ($errors->has('email'))
-        new bootstrap.Modal(document.getElementById('forgotPasswordModal')).show();
-    @endif
+<script>
+    // Password toggle
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const password = document.getElementById('password');
+        const icon = document.getElementById('togglePassword');
+        if (password.type === 'password') {
+            password.type = 'text';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        } else {
+            password.type = 'password';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        }
+    });
 
-    // Reset modal auto open jab email link se aao
-    @if(request()->has('token'))
-        new bootstrap.Modal(document.getElementById('resetPasswordModal')).show();
-    @endif
-</script> -->
+    // Forgot modal auto open on email error
+    if (document.getElementById('hasEmailError').value === '1') {
+        var forgotModal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+        forgotModal.show();
+    }
+
+    // Reset modal auto open jab token ho URL mein
+    if (document.getElementById('hasToken').value === '1') {
+        var resetModal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+        resetModal.show();
+    }
+</script>
+
 </body>
 </html>
