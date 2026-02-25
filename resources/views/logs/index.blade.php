@@ -17,7 +17,7 @@
         </a>
        
     </div>
-        <form method="POST" action="{{ route('logs.deleteAll') }}"
+        <form method="POST" action="#"
               onsubmit="return confirm('Are you sure you want to delete all Shopify logs?');">
             @csrf
             @method('DELETE')

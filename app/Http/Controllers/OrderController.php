@@ -9,6 +9,7 @@ use App\Services\Shopify\OrderService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 
 class OrderController extends Controller
@@ -17,6 +18,9 @@ class OrderController extends Controller
     public function HomeRoute(Request $request)
     {
         $shop = Auth::user();
+        if (!$shop) {
+            abort(403, 'Unauthorized access');
+        }
         $orders = Order::where('user_id', $shop->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -27,7 +31,9 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $shop = Auth::user();
-
+    if (!$shop) {
+            abort(403, 'Unauthorized access');
+        }
         $orders = Order::with('items')
             ->where('user_id', $shop->id)
             ->orderBy('created_at', 'desc')
@@ -35,6 +41,7 @@ class OrderController extends Controller
 
         return view('orders.index', compact('orders'));
     }
+
     public function orderDetail(Request $request)
     {
         $data = User::orderBy('created_at', 'desc')->get();
@@ -47,6 +54,7 @@ class OrderController extends Controller
             ->get();
         return view('orders.order-detail-view', compact('orderview'));
     }
+
     public function showOrderStatusForm(Request $request, $shopOrderId)
     {
         $order = Order::where('id', $shopOrderId)
@@ -67,9 +75,25 @@ class OrderController extends Controller
             $orderstatus->update([
                 'fulfillment_status' => $request->fulfillment_status ?? $orderstatus->fulfillment_status,
             ]);
-
+            $this->shopifyLog(
+                'order-status',
+                'Order fulfillment status updated',
+                [
+                    'order_id' => $orderstatus->id,
+                    'shop_id' => $orderstatus->user_id,
+                    'fulfillment_status' => $request->fulfillment_status,
+                ]
+            );
             // Sync to Shopify
             $orderService->syncStatus($orderstatus, $request);
+            $this->shopifyLog(
+                'shopify-sync',
+                'Order synced to Shopify successfully',
+                [
+                    'order_id' => $orderstatus->id,
+                    'shopify_order_id' => $orderstatus->shopify_order_id ?? null,
+                ]
+            );
 
             return redirect()->route('orders.detailview', ['userId' => $orderstatus->user_id])
                 ->with('success', 'Fulfillment status updated successfully');
@@ -169,7 +193,14 @@ class OrderController extends Controller
             // You might want to save tracking info if you have columns for it in DB, 
             // otherwise just pass it to Shopify sync
         ]);
-
+       $this->shopifyLog(
+            'webhook',
+            'Webhook received from Shopify',
+            [
+                'order_id' => $order->id,
+                'payload' => $request->all(),
+            ]
+        );
         // 4. Sync to Shopify (Status & Tracking)
         try {
             // Use OrderService to sync status to Shopify
@@ -177,8 +208,15 @@ class OrderController extends Controller
             $orderService->syncStatus($order, $request);
 
         } catch (\Exception $e) {
-            Log::error('Shopify Sync Failed: ' . $e->getMessage());
-            // We return success for the local update, but warn about sync
+            $this->shopifyLog(
+                'shopify-error',
+                'Shopify sync failed',
+                [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage(),
+                ]
+            );
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Order updated locally, but Shopify sync failed',
@@ -194,6 +232,10 @@ class OrderController extends Controller
     }
 public function resendOrderData($id)
 {
+    
+    if (!is_numeric($id)) {
+            return back()->with('error', 'Invalid Order ID');
+        }
     $order = Order::find($id);
 
     if (!$order) {
@@ -224,7 +266,9 @@ public function resendOrderData($id)
     ];
 
     $rows = json_decode($order->items_json ?? '[]', true); // products JSON stored in table
-
+    if (!is_array($rows)) {
+                return back()->with('error', 'Invalid product data');
+            }
     $orderData = [
         'clientemail' => $order->email ?? '',
         'clientname' => $order->client_name ?? '',
@@ -266,13 +310,51 @@ public function resendOrderData($id)
 
        
       if ($response->successful()) {
-            echo "Order data re-sent successfully!";
+           $this->shopifyLog(
+                'resend-order',
+                'Order data resent successfully',
+                [
+                    'order_id' => $order->id,
+                    'response' => $response->json(),
+                ]
+            );
         } else {
             echo "Failed to resend order: " . $response->body();
         }
         }catch (\Exception $e) {
+            $this->shopifyLog(
+                'resend-error',
+                'Failed to resend order',
+                [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage(),
+                ]
+            );
     echo "Error sending order: " . $e->getMessage();
     // exit; // optional, taaki aage code na chale
 }
+}
+
+private function shopifyLog($type, $message, $data = [])
+{
+    $path = storage_path('logs/shopifylogs');
+
+    if (!File::exists($path)) {
+        File::makeDirectory($path, 0755, true);
+    }
+
+    $fileName = $type . '-' . date('Y-m-d') . '.log';
+
+    $log = [
+        'time' => now()->toDateTimeString(),
+        'type' => $type,
+        'message' => $message,
+        'data' => $data,
+    ];
+
+    File::append(
+        $path . '/' . $fileName,
+        json_encode($log, JSON_PRETTY_PRINT) . PHP_EOL . PHP_EOL
+    );
 }
 }
